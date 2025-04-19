@@ -5,15 +5,39 @@
   <script src="scripts.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Harvest Tracking</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>Consumed Crops</title>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
       background-color: #f4f6f8;
       margin: 0;
       padding: 0;
+    }
+
+    /* Add top alert styles */
+    .top-alert {
+      position: fixed;
+      top: -60px;
+      left: 0;
+      right: 0;
+      padding: 15px;
+      text-align: center;
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+      z-index: 1000;
+      transition: top 0.5s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .top-alert.show {
+      top: 0;
+    }
+
+    .top-alert.error {
+      background-color: #f44336;
     }
 
     .header {
@@ -205,7 +229,7 @@
     .instruction-modal {
       display: none;
       position: fixed;
-      z-index: 2;
+      z-index: 1000;
       left: 0;
       top: 0;
       width: 100%;
@@ -260,45 +284,22 @@
     .instruction-list li {
       margin-bottom: 8px;
     }
-
-    .top-alert {
-      position: fixed;
-      top: -60px;
-      left: 0;
-      right: 0;
-      padding: 15px;
-      text-align: center;
-      background-color: #4CAF50;
-      color: white;
-      font-weight: bold;
-      z-index: 1000;
-      transition: top 0.5s ease;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    .top-alert.show {
-      top: 0;
-    }
-
-    .top-alert.error {
-      background-color: #f44336;
-    }
   </style>
 </head>
 <body>
   <!-- Instruction Modal -->
   <div id="instructionModal" class="instruction-modal">
     <div class="instruction-content">
-      <h2 class="instruction-title">Welcome to Harvest Tracking</h2>
+      <h2 class="instruction-title">Welcome to Consumed Crops</h2>
       <div class="instruction-text">
-        <p>This section helps you track your crop harvests. Here's how to use it:</p>
+        <p>This section helps you track the crops you've consumed. Here's how to use it:</p>
         <ul class="instruction-list">
-          <li><strong>Click on any crop</strong> to record your harvest quantity</li>
-          <li><strong>Add new crops</strong> if what you harvested isn't listed</li>
+          <li><strong>Click on any crop</strong> to record how many pieces you've consumed</li>
+          <li><strong>Add new crops</strong> if what you're looking for isn't listed</li>
           <li>Crops are organized by <strong>Vegetables</strong> and <strong>Fruits</strong></li>
-          <li>Your harvest data will be saved for future reference</li>
+          <li>Your data will be saved for future reference</li>
         </ul>
-        <p>Start tracking your harvests now!</p>
+        <p>Start tracking your crop consumption now!</p>
       </div>
       <button class="instruction-button" id="gotItButton">Got it!</button>
     </div>
@@ -350,8 +351,8 @@
   <div id="quantityModal" class="modal">
     <div class="modal-content">
       <span class="close" id="closeQuantityModal">&times;</span>
-      <h2 class="modal-title" id="quantityModalTitle">Enter Harvest Quantity</h2>
-      <label for="cropQuantity" class="quantity-label">Number of pieces harvested:</label>
+      <h2 class="modal-title" id="quantityModalTitle">Enter Quantity</h2>
+      <label for="cropQuantity" class="quantity-label">Number of pieces:</label>
       <input 
         type="number" 
         id="cropQuantity" 
@@ -361,7 +362,7 @@
         step="1"
         oninput="this.value = Math.abs(this.value)"
       >
-      <button class="modal-button" id="saveQuantityButton">Save Harvest</button>
+      <button class="modal-button" id="saveQuantityButton">Save</button>
     </div>
   </div>
 
@@ -409,10 +410,28 @@
   <script>
     // Current selected crop
     let currentCrop = '';
+    
+    // Function to show top alert
+    function showTopAlert(message, type = 'success') {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `top-alert ${type}`;
+      alertDiv.textContent = message;
+      document.body.prepend(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.classList.add('show');
+      }, 100);
+      
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 500);
+      }, 3000);
+    }
 
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       // Show instruction modal on first visit
+      const hasSeenInstructions = localStorage.getItem('hasSeenConsumedInstructions');
       if (!localStorage.getItem('hasSeenInstructions')) {
         document.getElementById('instructionModal').style.display = 'block';
       }
@@ -421,19 +440,12 @@
       loadCustomCrops();
       
       // Setup gotItButton click handler
-      document.getElementById('gotItButton').addEventListener('click', function() {
-        localStorage.setItem('hasSeenHarvestInstructions', 'true');
-        closeInstructionModal();
-      });
+      document.getElementById('gotItButton').addEventListener('click', closeInstructionModal);
       
       // Setup crop item click handlers
       document.querySelectorAll('.icon-item[data-crop]').forEach(item => {
         item.addEventListener('click', function() {
-          currentCrop = this.getAttribute('data-crop');
-          document.getElementById('quantityModalTitle').textContent = `Harvest ${currentCrop}`;
-          document.getElementById('cropQuantity').value = '';
-          document.getElementById('quantityModal').style.display = 'block';
-          document.getElementById('cropQuantity').focus();
+          openQuantityModal(this.getAttribute('data-crop'));
         });
       });
       
@@ -471,15 +483,12 @@
         if (event.target.classList.contains('modal')) {
           closeModal(event.target.id);
         }
-        if (event.target.classList.contains('instruction-modal')) {
-          closeInstructionModal();
-        }
       });
     });
 
     // Load custom crops from localStorage
     function loadCustomCrops() {
-      const customCrops = JSON.parse(localStorage.getItem('customCrops')) || [];
+      const customCrops = JSON.parse(localStorage.getItem('consumedCustomCrops')) || [];
       
       customCrops.forEach(crop => {
         const gridId = crop.category === 'vegetables' ? 'vegetablesGrid' : 'fruitsGrid';
@@ -500,11 +509,7 @@
         
         // Add click handler
         newCrop.addEventListener('click', function() {
-          currentCrop = crop.name;
-          document.getElementById('quantityModalTitle').textContent = `Harvest ${crop.name}`;
-          document.getElementById('cropQuantity').value = '';
-          document.getElementById('quantityModal').style.display = 'block';
-          document.getElementById('cropQuantity').focus();
+          openQuantityModal(crop.name);
         });
         
         // Insert before the Add button (last item)
@@ -512,22 +517,22 @@
       });
     }
 
-    // Save custom crops to localStorage
+    // Save custom crop to localStorage
     function saveCustomCrop(crop) {
-      const customCrops = JSON.parse(localStorage.getItem('customCrops')) || [];
+      const customCrops = JSON.parse(localStorage.getItem('consumedCustomCrops')) || [];
       
       // Check if crop already exists
       const exists = customCrops.some(c => c.name === crop.name && c.category === crop.category);
       if (!exists) {
         customCrops.push(crop);
-        localStorage.setItem('customCrops', JSON.stringify(customCrops));
+        localStorage.setItem('consumedCustomCrops', JSON.stringify(customCrops));
       }
     }
 
     // Open quantity modal
     function openQuantityModal(cropName) {
       currentCrop = cropName;
-      document.getElementById('quantityModalTitle').textContent = `Harvest ${cropName}`;
+      document.getElementById('quantityModalTitle').textContent = `Enter ${cropName} Quantity`;
       document.getElementById('cropQuantity').value = '';
       document.getElementById('quantityModal').style.display = 'block';
       document.getElementById('cropQuantity').focus();
@@ -555,27 +560,28 @@
       const quantity = parseInt(quantityInput.value);
       
       if (!isNaN(quantity) && quantity > 0) {
-        if (typeof addHarvestItem === 'function') {
-          addHarvestItem(currentCrop, quantity);
-          showTopAlert(`Harvested ${quantity} ${currentCrop}!`);
+        if (typeof addConsumedItem === 'function') {
+          addConsumedItem(currentCrop, quantity);
+          showTopAlert(`Added ${quantity} ${currentCrop} to consumed items!`);
           closeModal('quantityModal');
         } else {
-          showTopAlert('Error: Could not save data', 'error');
+          console.error('addConsumedItem function not found');
+          showTopAlert('Error: Could not save the data', 'error');
         }
       } else {
-        showTopAlert('Please enter valid quantity', 'error');
+        showTopAlert('Please enter a valid quantity (whole numbers only)', 'error');
         quantityInput.focus();
       }
     }
     
     // Add new crop to the grid
     function addNewCrop() {
-      const name = document.getElementById('newCropName').value.trim();
       const category = document.getElementById('cropCategory').value;
+      const name = document.getElementById('newCropName').value.trim();
       const icon = document.getElementById('newCropIcon').value;
       
       if (!name) {
-        showTopAlert('Please enter crop name', 'error');
+        showTopAlert('Please enter a crop name', 'error');
         return;
       }
       
@@ -600,11 +606,7 @@
       
       // Add click handler
       newCrop.addEventListener('click', function() {
-        currentCrop = name;
-        document.getElementById('quantityModalTitle').textContent = `Harvest ${name}`;
-        document.getElementById('cropQuantity').value = '';
-        document.getElementById('quantityModal').style.display = 'block';
-        document.getElementById('cropQuantity').focus();
+        openQuantityModal(name);
       });
       
       // Insert before the Add button (last item)
@@ -613,22 +615,11 @@
       // Save to localStorage
       saveCustomCrop({ name, category, icon });
       
-      showTopAlert(`Added new crop: ${name}`);
+      showTopAlert(`Added new ${category.slice(0, -1)}: ${name}`);
       closeModal('addModal');
-      document.getElementById('newCropName').value = '';
-    }
-
-    function showTopAlert(message, type = 'success') {
-      const alertDiv = document.createElement('div');
-      alertDiv.className = `top-alert ${type}`;
-      alertDiv.textContent = message;
-      document.body.prepend(alertDiv);
       
-      setTimeout(() => alertDiv.classList.add('show'), 100);
-      setTimeout(() => {
-        alertDiv.classList.remove('show');
-        setTimeout(() => alertDiv.remove(), 500);
-      }, 3000);
+      // Reset form
+      document.getElementById('newCropName').value = '';
     }
   </script>
 </body>
