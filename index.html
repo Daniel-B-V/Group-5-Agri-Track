@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Tracker Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <a href="main.html" onclick="return goToMainPage()" class="go-back-link">
+            <span class="material-icons-outlined">arrow_back</span>
+            <span class="go-back-text">Go Back</span>
+          </a>
+        </div>
+        <!-- Update the header-right section in index.html -->
+        <div class="header-right">
+          <div class="notification-icon-container">
+            <span class="material-icons-outlined" id="notificationBell">notifications</span>
+            <span class="notification-badge" id="notificationBadge">0</span>
+            <div class="notification-dropdown" id="notificationDropdown">
+              <div class="notification-header">
+                <h3>Notifications</h3>
+                <span class="mark-all-read" id="markAllRead">Mark all as read</span>
+              </div>
+              <div class="notification-list" id="notificationList">
+                <!-- Notifications will be added here dynamically -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="email-icon-container">
+            <span class="material-icons-outlined" id="emailIcon">email</span>
+            <div class="email-dropdown" id="emailDropdown">
+              <div class="email-header">
+                <h3>Feedback</h3>
+              </div>
+              <div class="email-form">
+                <textarea id="feedbackMessage" placeholder="Enter your feedback here..."></textarea>
+                <button id="sendFeedback">Send Feedback</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="profile-icon-container">
+            <span class="material-icons-outlined" id="profileIcon">account_circle</span>
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="profile-header">
+                <h3>User Profile</h3>
+              </div>
+              <div class="profile-options">
+                <a href="settings-page.html" id="viewProfile">View Profile</a>
+                <a href="settings-page.html">Settings</a>
+                <a href="main.html" id="logoutBtn">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+    
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <span class="material-icons-outlined">grass</span> Crop Tracker
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+
+        <ul class="sidebar-list">
+          <li class="sidebar-list-item">
+            <a href="#">
+              <span class="material-icons-outlined">dashboard</span> Dashboard
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="market-trends.html">
+              <span class="material-icons-outlined">trending_up</span> Market Trends
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="cs-page.html"> 
+              <span class="material-icons-outlined">eco</span> Consumed Crops
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="harvest-page.html">
+              <span class="material-icons-outlined">grass</span> Harvest
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="donation-page.html">
+              <span class="material-icons-outlined">volunteer_activism</span> Donated
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="report-page.html">
+              <span class="material-icons-outlined">poll</span> Reports
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="settings-page.html">
+              <span class="material-icons-outlined">settings</span> Settings
+            </a>
+          </li>
+        </ul>
+      </aside>
+    
+      <main class="main-container">
+        <div class="main-title">
+          <p class="font-weight-bold">DASHBOARD</p>
+        </div>
+
+        <div class="main-cards">
+          <div class="card">
+            <div class="card-inner">
+              <p class="text-primary">CONSUMED CROPS</p>
+              <span class="material-icons-outlined text-green">eco</span>
+            </div>
+            <span class="text-primary font-weight-bold" id="consumed-total">0</span>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <p class="text-primary">HARVEST</p>
+              <span class="material-icons-outlined text-orange">grass</span>
+            </div>
+            <span class="text-primary font-weight-bold" id="harvest-total">0</span>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <p class="text-primary">DONATED</p>
+              <span class="material-icons-outlined text-blue">volunteer_activism</span>
+            </div>
+            <span class="text-primary font-weight-bold" id="donated-total">0</span>
+          </div>
+          
+          <div class="card">
+            <div class="card-inner">
+              <p class="text-primary">NET YIELD</p>
+              <span class="material-icons-outlined text-red">trending_up</span>
+            </div>
+            <span class="text-primary font-weight-bold" id="net-yield">0</span>
+          </div>
+        </div>
+
+        <div class="charts-side-by-side">
+          <div class="charts-card">
+            <div class="chart-header">
+              <p class="chart-title">Top 5 Crops</p>
+              <div class="chart-toggle">
+                <button class="toggle-btn active" data-type="harvest">Harvested</button>
+                <button class="toggle-btn" data-type="consumed">Consumed</button>
+              </div>
+            </div>
+            <div id="bar-chart"></div>
+          </div>
+        
+          <div class="charts-card">
+            <p class="chart-title">Monthly Summary</p>
+            <div id="area-chart"></div>
+          </div>
+        </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
+    <script src="scripts.js"></script>
+  </body>
+</html>

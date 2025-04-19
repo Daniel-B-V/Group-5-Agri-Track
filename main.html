@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agri-Track</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="modal.css">
+</head>
+
+<body>
+    <!-- MOBILE NAV -->
+    <div class="mb-nav">
+        <div class="mb-move-item"></div>
+        <div class="mb-nav-item active">
+            <a href="#home">
+                <i class="bx bxs-home"></i>
+            </a>
+        </div>
+        <div class="mb-nav-item">
+            <a href="#about">
+                <i class='bx bxs-wink-smile'></i>
+            </a>
+        </div>
+        <div class="mb-nav-item">
+            <a href="#blog">
+                <i class='bx bxs-food-menu'></i>
+            </a>
+        </div>
+        <div class="mb-nav-item">
+            <a href="#testimonial">
+                <i class='bx bxs-comment-detail'></i>
+            </a>
+        </div>
+    </div>
+    <!-- END MOBILE NAV -->
+    <!-- BACK TO TOP BTN -->
+    <a href="#home" class="back-to-top">
+        <i class="bx bxs-to-top"></i>
+    </a>
+    <!-- END BACK TO TOP BTN -->
+    <!-- TOP NAVIGATION -->
+    <div class="nav">
+        <div class="menu-wrap">
+            <a href="#home">
+                <div class="logo">
+                    Agri-Track
+                </div>
+            </a>
+            <div class="menu h-xs">
+                <a href="#home">
+                    <div class="menu-item active">
+                        Home
+                    </div>
+                </a>
+                <a href="#about">
+                    <div class="menu-item">
+                        About us
+                    </div>
+                </a>
+                <a href="#blog">
+                    <div class="menu-item">
+                        Blog
+                    </div>
+                </a>
+                <a href="#testimonial">
+                    <div class="menu-item">
+                        News
+                    </div>
+                </a>
+            </div>
+            <div class="right-menu">
+                <div class="cart-btn">
+                    <img src="images/logo-agri.png" alt="Logo" class="logo-img">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END TOP NAVIGATION -->
+    <!-- SECTION HOME -->
+    <section id="home" class="fullheight align-items-center">
+        <video autoplay muted loop id="video-bg">
+            <source src="images/bg-crops.mp4" type="video/mp4">
+        </video>
+
+        <!-- LOGIN/SIGNUP MODAL -->
+        <div id="authModal" class="modal">
+            <div class="auth-container" id="authContainer">  
+                <div class="form-container sign-up-container">
+                    <form action="#">
+                        <span class="close-btn">&times;</span>
+                        <div class="logo-container">
+                            <img src="images/logo-agri.png" alt="Agri-Track Logo" class="auth-logo">
+                        </div>
+                        <h1>Create Account</h1>
+                        <div id="signupError" class="error-message"></div>
+                        <div class="infield">
+                            <input type="text" id="signupName" placeholder="Name" />
+                            <label></label>
+                        </div>
+                        <div class="infield">
+                            <input type="email" id="signupEmail" placeholder="Email" name="email"/>
+                            <label></label>
+                        </div>
+                        <div class="infield">
+                            <input type="password" id="signupPassword" placeholder="Password" />
+                            <label></label>
+                        </div>
+                        <button type="button" onclick="signupUser()">Sign Up</button>
+                    </form>
+                </div>
+                <div class="form-container sign-in-container">
+                    <form action="#">
+                        <span class="close-btn">&times;</span>
+                        <div class="logo-container">
+                            <img src="images/logo-agri.png" alt="Agri-Track Logo" class="auth-logo">
+                        </div>
+                        <h1>Sign in</h1>
+                        <div id="loginError" class="error-message"></div>
+                        <div class="infield">
+                            <input type="email" id="loginEmail" placeholder="Email" name="email"/>
+                            <label></label>
+                        </div>
+                        <div class="infield">
+                            <input type="password" id="loginPassword" placeholder="Password" />
+                            <label></label>
+                        </div>
+                        <a href="#" onclick="return showForgotPassword()" class="forgot">Forgot your password?</a>
+                        <button type="button" onclick="loginUser()">Sign In</button>
+                    </form>
+                </div>
+                <div class="overlay-container" id="overlayCon">
+                    <div class="overlay">
+                        <div class="overlay-panel overlay-left">
+                            <div class="welcome-icon">
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                            <h1>Welcome Back!</h1>
+                            <p>To keep connected with us please login with your personal info</p>
+                            <button>Sign In</button>
+                        </div>
+                        <div class="overlay-panel overlay-right">
+                            <div class="welcome-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h1>Hello, Friend!</h1>
+                            <p>Enter your personal details and start journey with us</p>
+                            <button>Sign Up</button>
+                        </div>
+                    </div>
+                    <button id="overlayBtn"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forgot Password Modal remains the same -->
+        <div id="forgotPasswordModal" class="modal">
+            <div class="auth-container">
+                <form id="forgotPasswordForm">
+                    <span class="close-btn" onclick="closeForgotPassword()">&times;</span>
+                    <div class="logo-container">
+                        <img src="images/logo-agri.png" alt="Agri-Track Logo" class="auth-logo">
+                    </div>
+                    <h1>Reset Password</h1>
+                    <div id="forgotPasswordError" class="error-message"></div>
+                    <div class="infield">
+                        <input type="email" id="resetEmail" placeholder="Your Email" required>
+                        <label></label>
+                    </div>
+                    <div class="infield">
+                        <input type="password" id="oldPassword" placeholder="Old Password" required>
+                        <label></label>
+                    </div>
+                    <div class="infield">
+                        <input type="password" id="newPassword" placeholder="New Password" required>
+                        <label></label>
+                    </div>
+                    <button type="button" onclick="resetPassword()">Reset Password</button>
+                    <p class="text-center">Remember your password? <a href="#" onclick="showLoginInstead()">Sign In</a></p>
+                </form>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-xs-12">
+                    <div class="slogan">
+                        <h1 class="left-to-right play-on-scroll">
+                            Farm Management
+                        </h1>
+                        <p class="left-to-right play-on-scroll delay-2">
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quae eveniet ullam perferendis
+                            eos, nobis corrupti similique fuga ipsa minus at eius ipsam expedita quam aliquam
+                            perspiciatis voluptate qui dolore soluta.
+                        </p>
+                        <div class="left-to-right play-on-scroll delay-4">                   
+                            <button id="getStartedBtn">Get Started</button>                      
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT US SECTION -->
+    <section id="about" class="fullheight align-items-center bg-img bg-img-fixed"
+    style="background-image: url(images/bg-about-us.jpg); background-color: rgba(0,0,0,0.7); background-blend-mode: overlay;">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 col-xs-12">
+                <div class="about-content">
+                    <h1 class="left-to-right play-on-scroll">Our Mission</h1>
+                    <div class="left-to-right play-on-scroll delay-2">
+                        <div class="mission-card">
+                            <i class="fas fa-seedling"></i>
+                            <h3>Harvest Management</h3>
+                            <p>We created Agri-Track to help farmers efficiently manage and track their harvests, ensuring optimal yields and reducing waste through smart planning tools.</p>
+                        </div>
+                    </div>
+                    <div class="left-to-right play-on-scroll delay-4">
+                        <div class="mission-card">
+                            <i class="fas fa-recycle"></i>
+                            <h3>Food Waste Reduction</h3>
+                            <p>Our platform connects farmers with donation networks to redistribute excess crops, solving food waste while helping communities in need.</p>
+                        </div>
+                    </div>
+                    <div class="left-to-right play-on-scroll delay-6">
+                        <div class="mission-card">
+                            <i class="fas fa-tractor"></i>
+                            <h3>Farm Management</h3>
+                            <p>Comprehensive tools to manage all aspects of your farm operations, from planting schedules to inventory tracking and sales management.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xs-12">
+                <div class="about-story right-to-left play-on-scroll">
+                    <h2>Our Story</h2>
+                    <p>Agri-Track was founded in 2025 by a team of tech enthusiasts who saw the need for better farm management solutions. We noticed that:</p>
+                    <ul>
+                        <li>30-40% of food produced is wasted before reaching consumers</li>
+                        <li>Farmers struggle with inefficient harvest tracking methods</li>
+                        <li>There's no easy way to connect excess produce with those in need</li>
+                    </ul>
+                    <p>Our solution combines cutting-edge technology with simple, farmer-friendly interfaces to solve these problems.</p>
+                    <a href="#blog" class="learn-more-btn-wrapper">
+                        <button class="learn-more-btn">Learn More About Our Features</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+        <!-- BLOG SECTION -->
+    <section id="blog" class="blog-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="left-to-right play-on-scroll">Key System Features</h1>
+                    <p class="left-to-right play-on-scroll delay-2">Essential tools for efficient farm management</p>
+                </div>
+            </div>
+            
+            <!-- Feature Cards -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="feature-grid left-to-right play-on-scroll delay-4">
+                        <div class="feature-card">
+                            <i class="fas fa-seedling"></i>
+                            <h3>Harvest Tracking</h3>
+                            <ul>
+                                <li>Record harvest dates and quantities</li>
+                                <li>Track crop quality metrics</li>
+                                <li>Generate harvest reports</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <i class="fas fa-utensils"></i>
+                            <h3>Crop Consumption</h3>
+                            <ul>
+                                <li>Monitor crop usage</li>
+                                <li>Track inventory levels</li>
+                                <li>Set usage alerts</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <i class="fas fa-recycle"></i>
+                            <h3>Waste Reduction</h3>
+                            <ul>
+                                <li>Identify surplus crops</li>
+                                <li>Connect with local food banks</li>
+                                <li>Track donations</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <i class="fas fa-chart-bar"></i>
+                            <h3>Farm Analytics</h3>
+                            <ul>
+                                <li>Visualize farm performance</li>
+                                <li>Compare seasonal data</li>
+                                <li>Generate reports</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Workflow Summary -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="workflow-summary right-to-left play-on-scroll delay-6">
+                        <h2>Simple Workflow</h2>
+                        <div class="workflow-steps">
+                            <div class="step">
+                                <div class="step-icon">1</div>
+                                <p>Sign up and set up your farm profile</p>
+                            </div>
+                            <div class="step">
+                                <div class="step-icon">2</div>
+                                <p>Record your harvests and consumption</p>
+                            </div>
+                            <div class="step">
+                                <div class="step-icon">3</div>
+                                <p>Monitor waste and donations</p>
+                            </div>
+                            <div class="step">
+                                <div class="step-icon">4</div>
+                                <p>View analytics and improve operations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- NEWS SECTION -->
+    <section id="testimonial" class="news-section" style="background-image: url('images/bg-news.jpg'); background-size: cover; background-position: center; background-attachment: fixed; background-color: rgba(0,0,0,0.6); background-blend-mode: overlay;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="section-title">Latest Agriculture News</h1>
+                    <p class="section-subtitle">Stay updated with the latest developments in farming and crop management</p>
+                </div>
+            </div>
+            
+            <div class="news-slider-container">
+                <button class="slider-arrow slider-arrow-left" aria-label="Previous news">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="news-slider-wrapper">
+                    <div class="news-slider">
+                        <!-- News Article 1 -->
+                        <div class="news-slide">
+                            <div class="news-card">
+                                <div class="news-image" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                                    <div class="news-category">Crop Science</div>
+                                </div>
+                                <div class="news-content">
+                                    <h3 class="news-title">New Drought-Resistant Wheat Varieties Show Promise</h3>
+                                    <p class="news-excerpt">Researchers have developed wheat strains that can thrive with 30% less water, potentially revolutionizing farming in arid regions.</p>
+                                    <div class="news-meta">
+                                        <span class="news-date">June 15, 2023</span>
+                                        <a href="https://example.com/drought-resistant-wheat" class="news-link" target="_blank">Read More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- News Article 2 -->
+                        <div class="news-slide">
+                            <div class="news-card">
+                                <div class="news-image" style="background-image: url('https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                                    <div class="news-category">Technology</div>
+                                </div>
+                                <div class="news-content">
+                                    <h3 class="news-title">AI-Powered Drones Reduce Pesticide Use by 50%</h3>
+                                    <p class="news-excerpt">Farmers adopting precision agriculture technologies are seeing significant reductions in chemical use while maintaining crop yields.</p>
+                                    <div class="news-meta">
+                                        <span class="news-date">June 10, 2023</span>
+                                        <a href="https://example.com/ai-drones-agriculture" class="news-link" target="_blank">Read More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- News Article 3 -->
+                        <div class="news-slide">
+                            <div class="news-card">
+                                <div class="news-image" style="background-image: url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                                    <div class="news-category">Market Trends</div>
+                                </div>
+                                <div class="news-content">
+                                    <h3 class="news-title">Global Grain Prices Stabilize After Record Harvests</h3>
+                                    <p class="news-excerpt">Improved weather conditions and farming techniques lead to bumper crops across major producing regions.</p>
+                                    <div class="news-meta">
+                                        <span class="news-date">June 5, 2023</span>
+                                        <a href="https://example.com/grain-prices-stabilize" class="news-link" target="_blank">Read More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- News Article 4 -->
+                        <div class="news-slide">
+                            <div class="news-card">
+                                <div class="news-image" style="background-image: url('https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                                    <div class="news-category">Philippines</div>
+                                </div>
+                                <div class="news-content">
+                                    <h3 class="news-title">New Corn Varieties Boost Farmer Incomes</h3>
+                                    <p class="news-excerpt">Philippine farmers report 30% higher yields with new drought-resistant corn varieties developed by local scientists.</p>
+                                    <div class="news-meta">
+                                        <span class="news-date">June 2, 2023</span>
+                                        <a href="https://www.pna.gov.ph/articles/1203456" class="news-link" target="_blank">Read More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- News Article 5 -->
+                        <div class="news-slide">
+                            <div class="news-card">
+                                <div class="news-image" style="background-image: url('https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80');">
+                                    <div class="news-category">Organic Farming</div>
+                                </div>
+                                <div class="news-content">
+                                    <h3 class="news-title">Urban Farming Initiative Grows in Metro Manila</h3>
+                                    <p class="news-excerpt">Community gardens and vertical farms are helping address food security in the Philippines' capital region.</p>
+                                    <div class="news-meta">
+                                        <span class="news-date">May 22, 2023</span>
+                                        <a href="https://mb.com.ph/2023/05/22/urban-farming-gains-ground-in-metro-manila/" class="news-link" target="_blank">Read More</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="slider-arrow slider-arrow-right" aria-label="Next news">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="row">
+                <div class="col-12 news-cta">
+                    <h2>Want more agriculture news?</h2>
+                    <a href="https://www.philstar.com/headlines/agriculture" class="btn-primary" target="_blank">View Philippine Agriculture News</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END NEWS SECTION -->
+    <!-- FOOTER SECTION -->
+    <section class="footer bg-img" style="background-image: url(images/footers-bg.jpg);">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-xs-12">
+                    <h1>Agri-Track</h1>
+                    <p>Helping farmers manage harvests and reduce food waste through innovative technology solutions.</p>
+                    <p>Email: contact@agri-track.com</p>
+                    <p>Phone: +63 123 456 7890</p>
+                </div>
+                <div class="col-2 col-xs-12">
+                    <h1>Links</h1>
+                    <p><a href="#">Home</a></p>
+                    <p><a href="#">About us</a></p>
+                    <p><a href="#blog">Blog</a></p>
+                    <p><a href="#testimonial">News</a></p>
+                </div>
+                <div class="col-4 col-xs-12">
+                    <h1>Subscribe</h1>
+                    <p>Get the latest updates on agriculture news and features</p>
+                    <div class="input-group">
+                        <input type="text" placeholder="Your email address">
+                        <button>Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- END FOOTER SECTION -->
+    <script>
+        // News Slider Functionality with Infinite Loop
+        document.addEventListener('DOMContentLoaded', function() {
+            // Original news data
+            const newsData = [
+                {
+                    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    category: "Crop Science",
+                    title: "New Drought-Resistant Wheat Varieties Show Promise",
+                    excerpt: "Researchers have developed wheat strains that can thrive with 30% less water, potentially revolutionizing farming in arid regions.",
+                    date: "June 15, 2023",
+                    link: "https://example.com/drought-resistant-wheat"
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1559128010-7c1ad6e1b6a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    category: "Technology",
+                    title: "AI-Powered Drones Reduce Pesticide Use by 50%",
+                    excerpt: "Farmers adopting precision agriculture technologies are seeing significant reductions in chemical use while maintaining crop yields.",
+                    date: "June 10, 2023",
+                    link: "https://example.com/ai-drones-agriculture"
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    category: "Market Trends",
+                    title: "Global Grain Prices Stabilize After Record Harvests",
+                    excerpt: "Improved weather conditions and farming techniques lead to bumper crops across major producing regions.",
+                    date: "June 5, 2023",
+                    link: "https://example.com/grain-prices-stabilize"
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    category: "Philippines",
+                    title: "New Corn Varieties Boost Farmer Incomes",
+                    excerpt: "Philippine farmers report 30% higher yields with new drought-resistant corn varieties developed by local scientists.",
+                    date: "June 2, 2023",
+                    link: "https://www.pna.gov.ph/articles/1203456"
+                },
+                {
+                    image: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+                    category: "Organic Farming",
+                    title: "Urban Farming Initiative Grows in Metro Manila",
+                    excerpt: "Community gardens and vertical farms are helping address food security in the Philippines' capital region.",
+                    date: "May 22, 2023",
+                    link: "https://mb.com.ph/2023/05/22/urban-farming-gains-ground-in-metro-manila/"
+                }
+            ];
+        
+            const slider = document.querySelector('.news-slider');
+            const leftArrow = document.querySelector('.slider-arrow-left');
+            const rightArrow = document.querySelector('.slider-arrow-right');
+            
+            // Duplicate news items for infinite effect
+            const duplicatedNews = [...newsData, ...newsData, ...newsData];
+            
+            // Generate news slides
+            slider.innerHTML = duplicatedNews.map(news => `
+                <div class="news-slide">
+                    <div class="news-card">
+                        <div class="news-image" style="background-image: url('${news.image}')">
+                            <div class="news-category">${news.category}</div>
+                        </div>
+                        <div class="news-content">
+                            <h3 class="news-title">${news.title}</h3>
+                            <p class="news-excerpt">${news.excerpt}</p>
+                            <div class="news-meta">
+                                <span class="news-date">${news.date}</span>
+                                <a href="${news.link}" class="news-link" target="_blank">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Set initial scroll position to the middle of the duplicated content
+            setTimeout(() => {
+                slider.scrollLeft = slider.scrollWidth / 3;
+            }, 100);
+            
+            // Scroll to the right when right arrow is clicked
+            rightArrow.addEventListener('click', function() {
+                const slideWidth = document.querySelector('.news-slide').offsetWidth + 30; // include gap
+                slider.scrollBy({
+                    left: slideWidth,
+                    behavior: 'smooth'
+                });
+                
+                // If at the end, jump to the middle without animation
+                if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 100) {
+                    setTimeout(() => {
+                        slider.scrollTo({
+                            left: slider.scrollWidth / 3,
+                            behavior: 'auto'
+                        });
+                    }, 300);
+                }
+            });
+            
+            // Scroll to the left when left arrow is clicked
+            leftArrow.addEventListener('click', function() {
+                const slideWidth = document.querySelector('.news-slide').offsetWidth + 30; // include gap
+                slider.scrollBy({
+                    left: -slideWidth,
+                    behavior: 'smooth'
+                });
+                
+                // If at the start, jump to the middle without animation
+                if (slider.scrollLeft <= 100) {
+                    setTimeout(() => {
+                        slider.scrollTo({
+                            left: slider.scrollWidth / 3,
+                            behavior: 'auto'
+                        });
+                    }, 300);
+                }
+            });
+            
+            // Hide arrows when not needed (for mobile)
+            function checkArrows() {
+                // Always show arrows for infinite slider
+                leftArrow.style.display = 'flex';
+                rightArrow.style.display = 'flex';
+            }
+            
+            // Check arrows on scroll
+            slider.addEventListener('scroll', checkArrows);
+            
+            // Initial check
+            checkArrows();
+        });
+        </script>
+    <script src="lp-scripts.js"></script>
+
+</body>
+</html>

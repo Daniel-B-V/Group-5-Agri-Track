@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Agri-Track</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .go-back-btn {
+      display: flex;
+      align-items: center;
+      background-color: #367952;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .go-back-btn span {
+      margin-right: 5px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #367952;
+      padding-bottom: 10px;
+      color: #333;
+    }
+
+    .settings-section {
+      margin-bottom: 30px;
+    }
+
+    .settings-section h2 {
+      font-size: 20px;
+      color: #367952;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .settings-section h2 span {
+      margin-right: 10px;
+    }
+
+    .settings-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      transition: background-color 0.3s;
+      cursor: pointer;
+    }
+
+    .settings-option:hover {
+      background-color: #f9f9f9;
+    }
+
+    .option-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .option-title {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .option-description {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .option-action {
+      color: #367952;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+
+    .logout-btn span {
+      margin-right: 8px;
+    }
+
+    .logout-btn:hover {
+      background-color: #c0392b;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 25px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .modal-title {
+      margin-top: 0;
+      color: #367952;
+      font-size: 22px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .modal-title span {
+      margin-right: 10px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .modal-button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .confirm-btn {
+      background-color: #367952;
+      color: white;
+    }
+
+    .confirm-btn:hover {
+      background-color: #2a6142;
+    }
+
+    .cancel-btn {
+      background-color: #95a5a6;
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      background-color: #7f8c8d;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #367952;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+    }
+
+    .notification-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .notification-label {
+      font-weight: 500;
+    }
+
+    .success-message {
+      color: #367952;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logout Confirmation Modal -->
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('logoutModal')">&times;</span>
+      <h2 class="modal-title"><span class="material-icons-outlined">logout</span>Confirm Logout</h2>
+      <p>Are you sure you want to log out of your Agri-Track account?</p>
+      <div class="modal-buttons">
+        <button class="modal-button cancel-btn" onclick="closeModal('logoutModal')">Cancel</button>
+        <button class="modal-button confirm-btn" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Information Modal -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('profileModal')">&times;</span>
+      <h2 class="modal-title"><span class="material-icons-outlined">account_circle</span>Profile Information</h2>
+      
+      <div class="form-group">
+        <label for="profileName">Full Name</label>
+        <input type="text" id="profileName" class="form-control" placeholder="Enter your name">
+      </div>
+      
+      <div class="form-group">
+        <label for="profileEmail">Email Address</label>
+        <input type="email" id="profileEmail" class="form-control" placeholder="Enter your email" readonly>
+      </div>
+      
+      <div class="form-group">
+        <label for="profilePhone">Phone Number</label>
+        <input type="tel" id="profilePhone" class="form-control" placeholder="Enter your phone number">
+      </div>
+      
+      <div class="form-group">
+        <label for="profileLocation">Location</label>
+        <input type="text" id="profileLocation" class="form-control" placeholder="Enter your location">
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-button cancel-btn" onclick="closeModal('profileModal')">Cancel</button>
+        <button class="modal-button confirm-btn" onclick="saveProfile()">Save Changes</button>
+      </div>
+      
+      <div id="profileSuccess" class="success-message">Profile updated successfully!</div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="passwordModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('passwordModal')">&times;</span>
+      <h2 class="modal-title"><span class="material-icons-outlined">lock</span>Change Password</h2>
+      
+      <div class="form-group">
+        <label for="currentPassword">Current Password</label>
+        <input type="password" id="currentPassword" class="form-control" placeholder="Enter current password">
+      </div>
+      
+      <div class="form-group">
+        <label for="newPassword">New Password</label>
+        <input type="password" id="newPassword" class="form-control" placeholder="Enter new password">
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword">Confirm New Password</label>
+        <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password">
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-button cancel-btn" onclick="closeModal('passwordModal')">Cancel</button>
+        <button class="modal-button confirm-btn" onclick="changePassword()">Change Password</button>
+      </div>
+      
+      <div id="passwordSuccess" class="success-message">Password changed successfully!</div>
+      <div id="passwordError" style="color: #e74c3c; margin-top: 10px; display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Email Notifications Modal -->
+  <div id="emailModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('emailModal')">&times;</span>
+      <h2 class="modal-title"><span class="material-icons-outlined">email</span>Email Notifications</h2>
+      
+      <div class="notification-item">
+        <span class="notification-label">Harvest reminders</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="harvestReminders" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="notification-item">
+        <span class="notification-label">Consumption alerts</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="consumptionAlerts" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="notification-item">
+        <span class="notification-label">Donation opportunities</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="donationOpportunities">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="notification-item">
+        <span class="notification-label">System updates</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="systemUpdates" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-button cancel-btn" onclick="closeModal('emailModal')">Cancel</button>
+        <button class="modal-button confirm-btn" onclick="saveEmailSettings()">Save Settings</button>
+      </div>
+      
+      <div id="emailSuccess" class="success-message">Email settings updated!</div>
+    </div>
+  </div>
+
+  <!-- Push Notifications Modal -->
+  <div id="pushModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('pushModal')">&times;</span>
+      <h2 class="modal-title"><span class="material-icons-outlined">notifications</span>Push Notifications</h2>
+      
+      <div class="notification-item">
+        <span class="notification-label">Enable push notifications</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="enablePush">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="notification-item">
+        <span class="notification-label">Important alerts</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="importantAlerts" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="notification-item">
+        <span class="notification-label">Daily summaries</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="dailySummaries">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="notification-item">
+        <span class="notification-label">Sound notifications</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="soundNotifications" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-button cancel-btn" onclick="closeModal('pushModal')">Cancel</button>
+        <button class="modal-button confirm-btn" onclick="savePushSettings()">Save Settings</button>
+      </div>
+      
+      <div id="pushSuccess" class="success-message">Notification settings updated!</div>
+    </div>
+  </div>
+
+  <!-- Help Center Modal -->
+  <div id="helpModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('helpModal')">&times;</span>
+      <h2 class="modal-title"><span class="material-icons-outlined">help</span>Help Center</h2>
+      
+      <div class="form-group">
+        <h3 style="color: #367952; margin-bottom: 15px;">Frequently Asked Questions</h3>
+        <div style="margin-bottom: 20px;">
+          <h4>How do I track my harvest?</h4>
+          <p>Go to the Harvest section and click on the crop you want to track. Enter the quantity harvested and save.</p>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <h4>How can I donate excess crops?</h4>
+          <p>Visit the Donate section to see communities in need. Select a community and specify what you want to donate.</p>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <h4>How do I change my password?</h4>
+          <p>Go to Settings > Account > Change Password. Enter your current and new password.</p>
+        </div>
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-button confirm-btn" onclick="closeModal('helpModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Us Modal -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('contactModal')">&times;</span>
+      <h2 class="modal-title"><span class="material-icons-outlined">contact_support</span>Contact Us</h2>
+      
+      <div class="form-group">
+        <label for="contactSubject">Subject</label>
+        <input type="text" id="contactSubject" class="form-control" placeholder="What's this about?">
+      </div>
+      
+      <div class="form-group">
+        <label for="contactMessage">Message</label>
+        <textarea id="contactMessage" class="form-control" rows="5" placeholder="Describe your issue or question"></textarea>
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="modal-button cancel-btn" onclick="closeModal('contactModal')">Cancel</button>
+        <button class="modal-button confirm-btn" onclick="sendContactMessage()">Send Message</button>
+      </div>
+      
+      <div id="contactSuccess" class="success-message">Your message has been sent! We'll respond within 24 hours.</div>
+    </div>
+  </div>
+
+  <!-- Header with Back Button -->
+  <div class="header">
+    <a href="index.html" class="go-back-btn">
+      <span class="material-icons-outlined">arrow_back</span>
+      Go Back
+    </a>
+  </div>
+
+  <div class="container">
+    <h1>Settings</h1>
+    
+    <div class="settings-section">
+      <h2><span class="material-icons-outlined">account_circle</span> Account</h2>
+      <div class="settings-option" onclick="openModal('profileModal')">
+        <div class="option-info">
+          <div class="option-title">Profile Information</div>
+          <div class="option-description">View and edit your account details</div>
+        </div>
+        <div class="option-action">Edit</div>
+      </div>
+      <div class="settings-option" onclick="openModal('passwordModal')">
+        <div class="option-info">
+          <div class="option-title">Change Password</div>
+          <div class="option-description">Update your login password</div>
+        </div>
+        <div class="option-action">Change</div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h2><span class="material-icons-outlined">notifications</span> Notifications</h2>
+      <div class="settings-option" onclick="openModal('emailModal')">
+        <div class="option-info">
+          <div class="option-title">Email Notifications</div>
+          <div class="option-description">Manage email alerts and updates</div>
+        </div>
+        <div class="option-action">Manage</div>
+      </div>
+      <div class="settings-option" onclick="openModal('pushModal')">
+        <div class="option-info">
+          <div class="option-title">Push Notifications</div>
+          <div class="option-description">Control app notifications</div>
+        </div>
+        <div class="option-action">Settings</div>
+      </div>
+    </div>
+    
+    <div class="settings-section">
+      <h2><span class="material-icons-outlined">help</span> Support</h2>
+      <div class="settings-option" onclick="openModal('helpModal')">
+        <div class="option-info">
+          <div class="option-title">Help Center</div>
+          <div class="option-description">Find answers to common questions</div>
+        </div>
+        <div class="option-action">View</div>
+      </div>
+      <div class="settings-option" onclick="openModal('contactModal')">
+        <div class="option-info">
+          <div class="option-title">Contact Us</div>
+          <div class="option-description">Get in touch with our support team</div>
+        </div>
+        <div class="option-action">Contact</div>
+      </div>
+    </div>
+    
+    <button class="logout-btn" onclick="openModal('logoutModal')">
+      <span class="material-icons-outlined">logout</span>
+      Log Out
+    </button>
+  </div>
+
+  <script>
+    // Current user data
+    let currentUser = null;
+    
+    // Initialize the page
+    window.addEventListener('DOMContentLoaded', () => {
+      // Get current user from localStorage
+      const userData = localStorage.getItem('currentUser');
+      if (!userData) {
+        window.location.href = 'main.html';
+        return;
+      }
+      
+      currentUser = JSON.parse(userData);
+      
+      // Initialize profile data
+      document.getElementById('profileName').value = currentUser.name || '';
+      document.getElementById('profileEmail').value = currentUser.email;
+      document.getElementById('profilePhone').value = currentUser.phone || '';
+      document.getElementById('profileLocation').value = currentUser.location || '';
+      
+      // Initialize notification settings
+      if (currentUser.notificationSettings) {
+        const settings = currentUser.notificationSettings;
+        
+        // Email settings
+        if (settings.email) {
+          document.getElementById('harvestReminders').checked = settings.email.harvestReminders !== false;
+          document.getElementById('consumptionAlerts').checked = settings.email.consumptionAlerts !== false;
+          document.getElementById('donationOpportunities').checked = settings.email.donationOpportunities || false;
+          document.getElementById('systemUpdates').checked = settings.email.systemUpdates !== false;
+        }
+        
+        // Push settings
+        if (settings.push) {
+          document.getElementById('enablePush').checked = settings.push.enabled || false;
+          document.getElementById('importantAlerts').checked = settings.push.importantAlerts !== false;
+          document.getElementById('dailySummaries').checked = settings.push.dailySummaries || false;
+          document.getElementById('soundNotifications').checked = settings.push.soundNotifications !== false;
+        }
+      } else {
+        // Default settings
+        currentUser.notificationSettings = {
+          email: {
+            harvestReminders: true,
+            consumptionAlerts: true,
+            donationOpportunities: false,
+            systemUpdates: true
+          },
+          push: {
+            enabled: false,
+            importantAlerts: true,
+            dailySummaries: false,
+            soundNotifications: true
+          }
+        };
+        saveUserData();
+      }
+    });
+    
+    // Open modal function
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = 'block';
+      
+      // Clear any success messages
+      document.querySelectorAll('.success-message').forEach(el => {
+        el.style.display = 'none';
+      });
+      
+      // Clear password error
+      if (modalId === 'passwordModal') {
+        document.getElementById('passwordError').style.display = 'none';
+      }
+    }
+    
+    // Close modal function
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+    
+    // Save profile information
+    function saveProfile() {
+      currentUser.name = document.getElementById('profileName').value;
+      currentUser.phone = document.getElementById('profilePhone').value;
+      currentUser.location = document.getElementById('profileLocation').value;
+      
+      saveUserData();
+      document.getElementById('profileSuccess').style.display = 'block';
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        document.getElementById('profileSuccess').style.display = 'none';
+        closeModal('profileModal');
+      }, 3000);
+    }
+    
+    // Change password
+    function changePassword() {
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      const errorElement = document.getElementById('passwordError');
+      errorElement.style.display = 'none';
+      
+      // Validate inputs
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        errorElement.textContent = 'Please fill in all fields';
+        errorElement.style.display = 'block';
+        return;
+      }
+      
+      if (currentPassword !== currentUser.password) {
+        errorElement.textContent = 'Current password is incorrect';
+        errorElement.style.display = 'block';
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        errorElement.textContent = 'Password must be at least 6 characters';
+        errorElement.style.display = 'block';
+        return;
+      }
+      
+      if (newPassword !== confirmPassword) {
+        errorElement.textContent = 'New passwords do not match';
+        errorElement.style.display = 'block';
+        return;
+      }
+      
+      // Update password
+      currentUser.password = newPassword;
+      saveUserData();
+      
+      // Show success and clear form
+      document.getElementById('passwordSuccess').style.display = 'block';
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        document.getElementById('passwordSuccess').style.display = 'none';
+        closeModal('passwordModal');
+      }, 3000);
+    }
+    
+    // Save email notification settings
+    function saveEmailSettings() {
+      currentUser.notificationSettings.email = {
+        harvestReminders: document.getElementById('harvestReminders').checked,
+        consumptionAlerts: document.getElementById('consumptionAlerts').checked,
+        donationOpportunities: document.getElementById('donationOpportunities').checked,
+        systemUpdates: document.getElementById('systemUpdates').checked
+      };
+      
+      saveUserData();
+      document.getElementById('emailSuccess').style.display = 'block';
+      
+      setTimeout(() => {
+        document.getElementById('emailSuccess').style.display = 'none';
+        closeModal('emailModal');
+      }, 3000);
+    }
+    
+    // Save push notification settings
+    function savePushSettings() {
+      currentUser.notificationSettings.push = {
+        enabled: document.getElementById('enablePush').checked,
+        importantAlerts: document.getElementById('importantAlerts').checked,
+        dailySummaries: document.getElementById('dailySummaries').checked,
+        soundNotifications: document.getElementById('soundNotifications').checked
+      };
+      
+      saveUserData();
+      document.getElementById('pushSuccess').style.display = 'block';
+      
+      setTimeout(() => {
+        document.getElementById('pushSuccess').style.display = 'none';
+        closeModal('pushModal');
+      }, 3000);
+    }
+    
+    // Send contact message
+    function sendContactMessage() {
+      const subject = document.getElementById('contactSubject').value;
+      const message = document.getElementById('contactMessage').value;
+      
+      if (!subject || !message) {
+        alert('Please fill in both subject and message fields');
+        return;
+      }
+      
+      // In a real app, you would send this to your backend
+      console.log('Contact message sent:', { subject, message });
+      
+      // Show success and clear form
+      document.getElementById('contactSuccess').style.display = 'block';
+      document.getElementById('contactSubject').value = '';
+      document.getElementById('contactMessage').value = '';
+      
+      setTimeout(() => {
+        document.getElementById('contactSuccess').style.display = 'none';
+        closeModal('contactModal');
+      }, 3000);
+    }
+    
+    // Logout function
+    function logout() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'main.html';
+    }
+    
+    // Save user data to localStorage
+    function saveUserData() {
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    }
+    
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        document.querySelectorAll('.modal').forEach(modal => {
+          modal.style.display = 'none';
+        });
+      }
+    }
+  </script>
+</body>
+</html>

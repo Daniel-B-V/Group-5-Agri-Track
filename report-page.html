@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Tracker - Reports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
+  <style>
+    .report-container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #367952;
+    }
+
+    .report-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #367952;
+    }
+
+    .report-period {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .period-selector {
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .report-section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-title span {
+      margin-right: 10px;
+      color: #367952;
+    }
+
+    .chart-container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .summary-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border-left: 4px solid #367952;
+    }
+
+    .summary-card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #666;
+      font-size: 16px;
+    }
+
+    .summary-card p {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+    }
+
+    .data-table th, .data-table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .data-table th {
+      background-color: #f5f5f5;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .data-table tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .export-btn {
+      padding: 10px 15px;
+      background-color: #367952;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+    }
+
+    .export-btn:hover {
+      background-color: #2a6142;
+    }
+
+    .print-btn {
+      background-color: #4f35a1;
+    }
+
+    .print-btn:hover {
+      background-color: #3a2678;
+    }
+
+    @media print {
+      .no-print {
+        display: none;
+      }
+      .report-container {
+        box-shadow: none;
+        padding: 0;
+      }
+    }
+
+    /* Header styles matching cs-page.html */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .go-back-btn {
+      display: flex;
+      align-items: center;
+      background-color: #367952;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .go-back-btn span {
+      margin-right: 5px;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .main-container {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header matching cs-page.html -->
+  <header class="header">
+    <div class="header-left">
+      <a href="index.html" class="go-back-btn">
+        <span class="material-icons-outlined">arrow_back</span>
+        Go Back
+      </a>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="report-container">
+      <div class="report-header">
+        <h1 class="report-title">Crop Performance Reports</h1>
+        <div class="report-period no-print">
+          <span>Period:</span>
+          <select class="period-selector" id="periodSelector" onchange="updateReportData()">
+            <option value="7">Last 7 Days</option>
+            <option value="30" selected>Last 30 Days</option>
+            <option value="90">Last 3 Months</option>
+            <option value="365">Last Year</option>
+            <option value="all">All Time</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <h2 class="section-title"><span class="material-icons-outlined">assessment</span> Key Metrics</h2>
+        <div class="summary-cards">
+          <div class="summary-card">
+            <h3>Total Harvested</h3>
+            <p id="totalHarvested">0</p>
+          </div>
+          <div class="summary-card">
+            <h3>Total Consumed</h3>
+            <p id="totalConsumed">0</p>
+          </div>
+          <div class="summary-card">
+            <h3>Total Donated</h3>
+            <p id="totalDonated">0</p>
+          </div>
+          <div class="summary-card">
+            <h3>Net Yield</h3>
+            <p id="netYield">0</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <h2 class="section-title"><span class="material-icons-outlined">show_chart</span> Crop Performance</h2>
+        <div class="chart-container">
+          <div id="cropPerformanceChart"></div>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <h2 class="section-title"><span class="material-icons-outlined">calendar_today</span> Monthly Trends</h2>
+        <div class="chart-container">
+          <div id="monthlyTrendsChart"></div>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <h2 class="section-title"><span class="material-icons-outlined">table_chart</span> Detailed Data</h2>
+        <div class="chart-container">
+          <h3>Harvest Records</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Crop</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody id="harvestTableBody">
+              <!-- Will be populated by JavaScript -->
+            </tbody>
+          </table>
+
+          <h3>Consumption Records</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Crop</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody id="consumptionTableBody">
+              <!-- Will be populated by JavaScript -->
+            </tbody>
+          </table>
+
+          <h3>Donation Records</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Crop</th>
+                <th>Quantity</th>
+                <th>Community</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody id="donationTableBody">
+              <!-- Will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="no-print">
+        <h2 class="section-title"><span class="material-icons-outlined">get_app</span> Export Reports</h2>
+        <div class="export-buttons">
+          <button class="export-btn" onclick="exportToPDF()">
+            <span class="material-icons-outlined">picture_as_pdf</span>
+            Export to PDF
+          </button>
+          <button class="export-btn" onclick="exportToCSV()">
+            <span class="material-icons-outlined">text_snippet</span>
+            Export to CSV
+          </button>
+          <button class="export-btn print-btn" onclick="window.print()">
+            <span class="material-icons-outlined">print</span>
+            Print Report
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Charts
+    let cropPerformanceChart, monthlyTrendsChart;
+
+    // Data Storage and Management
+    const STORAGE_KEY = 'cropTrackerData';
+
+    function getStoredData() {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : {
+        consumed: [],
+        harvest: [],
+        donated: [],
+        lastUpdated: new Date().toISOString()
+      };
+    }
+
+    // Initialize the page
+    window.addEventListener('DOMContentLoaded', () => {
+      updateReportData();
+    });
+
+    // Update report data based on selected period
+    function updateReportData() {
+      const period = document.getElementById('periodSelector').value;
+      const data = getFilteredData(period);
+      
+      updateSummaryCards(data);
+      updateCharts(data);
+      updateTables(data);
+    }
+
+    // Filter data based on selected period
+    function getFilteredData(period) {
+      const data = getStoredData();
+      const now = new Date();
+      let cutoffDate = new Date();
+      
+      if (period === '7') cutoffDate.setDate(now.getDate() - 7);
+      else if (period === '30') cutoffDate.setDate(now.getDate() - 30);
+      else if (period === '90') cutoffDate.setDate(now.getDate() - 90);
+      else if (period === '365') cutoffDate.setDate(now.getDate() - 365);
+      else if (period === 'all') cutoffDate = new Date(0); // All time
+      
+      const filteredData = {
+        harvest: data.harvest.filter(item => new Date(item.date) >= cutoffDate),
+        consumed: data.consumed.filter(item => new Date(item.date) >= cutoffDate),
+        donated: data.donated.filter(item => new Date(item.date) >= cutoffDate)
+      };
+      
+      return filteredData;
+    }
+
+    // Update summary cards
+    function updateSummaryCards(data) {
+      const totalHarvested = data.harvest.reduce((sum, item) => sum + item.quantity, 0);
+      const totalConsumed = data.consumed.reduce((sum, item) => sum + item.quantity, 0);
+      const totalDonated = data.donated.reduce((sum, item) => sum + item.quantity, 0);
+      const netYield = totalHarvested - totalConsumed - totalDonated;
+      
+      document.getElementById('totalHarvested').textContent = totalHarvested;
+      document.getElementById('totalConsumed').textContent = totalConsumed;
+      document.getElementById('totalDonated').textContent = totalDonated;
+      document.getElementById('netYield').textContent = netYield;
+    }
+
+    // Update charts
+    function updateCharts(data) {
+      updateCropPerformanceChart(data);
+      updateMonthlyTrendsChart(data);
+    }
+
+    function updateCropPerformanceChart(data) {
+      // Group by crop
+      const harvestByCrop = {};
+      data.harvest.forEach(item => {
+        if (!harvestByCrop[item.crop]) harvestByCrop[item.crop] = 0;
+        harvestByCrop[item.crop] += item.quantity;
+      });
+      
+      const consumedByCrop = {};
+      data.consumed.forEach(item => {
+        if (!consumedByCrop[item.crop]) consumedByCrop[item.crop] = 0;
+        consumedByCrop[item.crop] += item.quantity;
+      });
+      
+      const donatedByCrop = {};
+      data.donated.forEach(item => {
+        if (!donatedByCrop[item.crop]) donatedByCrop[item.crop] = 0;
+        donatedByCrop[item.crop] += item.quantity;
+      });
+      
+      // Get all unique crops
+      const allCrops = [...new Set([
+        ...Object.keys(harvestByCrop),
+        ...Object.keys(consumedByCrop),
+        ...Object.keys(donatedByCrop)
+      ])];
+      
+      // Prepare data for chart
+      const harvestData = allCrops.map(crop => harvestByCrop[crop] || 0);
+      const consumedData = allCrops.map(crop => consumedByCrop[crop] || 0);
+      const donatedData = allCrops.map(crop => donatedByCrop[crop] || 0);
+      
+      // Create or update chart
+      const options = {
+        series: [
+          { name: 'Harvested', data: harvestData },
+          { name: 'Consumed', data: consumedData },
+          { name: 'Donated', data: donatedData }
+        ],
+        chart: {
+          type: 'bar',
+          height: 350,
+          stacked: true,
+          toolbar: { show: false }
+        },
+        plotOptions: {
+          bar: { horizontal: false }
+        },
+        xaxis: { categories: allCrops },
+        yaxis: { title: { text: 'Quantity' } },
+        colors: ['#367952', '#246dec', '#f5b74f'],
+        legend: { position: 'top' },
+        tooltip: { shared: true, intersect: false }
+      };
+      
+      if (cropPerformanceChart) {
+        cropPerformanceChart.updateOptions(options);
+      } else {
+        cropPerformanceChart = new ApexCharts(document.querySelector('#cropPerformanceChart'), options);
+        cropPerformanceChart.render();
+      }
+    }
+
+    function updateMonthlyTrendsChart(data) {
+      // Group by month
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const currentYear = new Date().getFullYear();
+      
+      const harvestByMonth = Array(12).fill(0);
+      data.harvest.forEach(item => {
+        const date = new Date(item.date);
+        if (date.getFullYear() === currentYear) {
+          harvestByMonth[date.getMonth()] += item.quantity;
+        }
+      });
+      
+      const consumedByMonth = Array(12).fill(0);
+      data.consumed.forEach(item => {
+        const date = new Date(item.date);
+        if (date.getFullYear() === currentYear) {
+          consumedByMonth[date.getMonth()] += item.quantity;
+        }
+      });
+      
+      const donatedByMonth = Array(12).fill(0);
+      data.donated.forEach(item => {
+        const date = new Date(item.date);
+        if (date.getFullYear() === currentYear) {
+          donatedByMonth[date.getMonth()] += item.quantity;
+        }
+      });
+      
+      // Create or update chart
+      const options = {
+        series: [
+          { name: 'Harvested', data: harvestByMonth },
+          { name: 'Consumed', data: consumedByMonth },
+          { name: 'Donated', data: donatedByMonth }
+        ],
+        chart: {
+          type: 'line',
+          height: 350,
+          toolbar: { show: false }
+        },
+        stroke: { curve: 'smooth' },
+        xaxis: { categories: months },
+        yaxis: { title: { text: 'Quantity' } },
+        colors: ['#367952', '#246dec', '#f5b74f'],
+        legend: { position: 'top' }
+      };
+      
+      if (monthlyTrendsChart) {
+        monthlyTrendsChart.updateOptions(options);
+      } else {
+        monthlyTrendsChart = new ApexCharts(document.querySelector('#monthlyTrendsChart'), options);
+        monthlyTrendsChart.render();
+      }
+    }
+
+    // Update tables
+    function updateTables(data) {
+      updateHarvestTable(data.harvest);
+      updateConsumptionTable(data.consumed);
+      updateDonationTable(data.donated);
+    }
+
+    function updateHarvestTable(harvestData) {
+      const tbody = document.getElementById('harvestTableBody');
+      tbody.innerHTML = '';
+      
+      harvestData.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      harvestData.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${formatDate(item.date)}</td>
+          <td>${item.crop}</td>
+          <td>${item.quantity}</td>
+        `;
+        tbody.appendChild(row);
+      });
+      
+      if (harvestData.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="3" style="text-align: center;">No harvest records found</td>';
+        tbody.appendChild(row);
+      }
+    }
+
+    function updateConsumptionTable(consumedData) {
+      const tbody = document.getElementById('consumptionTableBody');
+      tbody.innerHTML = '';
+      
+      consumedData.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      consumedData.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${formatDate(item.date)}</td>
+          <td>${item.crop}</td>
+          <td>${item.quantity}</td>
+        `;
+        tbody.appendChild(row);
+      });
+      
+      if (consumedData.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="3" style="text-align: center;">No consumption records found</td>';
+        tbody.appendChild(row);
+      }
+    }
+
+    function updateDonationTable(donatedData) {
+      const tbody = document.getElementById('donationTableBody');
+      tbody.innerHTML = '';
+      
+      donatedData.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      donatedData.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${formatDate(item.date)}</td>
+          <td>${item.crop}</td>
+          <td>${item.quantity}</td>
+          <td>${item.community || 'N/A'}</td>
+          <td>${item.location || 'N/A'}</td>
+        `;
+        tbody.appendChild(row);
+      });
+      
+      if (donatedData.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="5" style="text-align: center;">No donation records found</td>';
+        tbody.appendChild(row);
+      }
+    }
+
+    // Helper function to format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+
+    // Export functions
+    function exportToPDF() {
+      alert('In a complete implementation, this would generate a PDF report');
+    }
+
+    function exportToCSV() {
+      const data = getStoredData();
+      let csvContent = "data:text/csv;charset=utf-8,";
+      
+      // Harvest data
+      csvContent += "Harvest Data\nDate,Crop,Quantity\n";
+      data.harvest.forEach(item => {
+        csvContent += `${formatDate(item.date)},${item.crop},${item.quantity}\n`;
+      });
+      
+      // Consumption data
+      csvContent += "\nConsumption Data\nDate,Crop,Quantity\n";
+      data.consumed.forEach(item => {
+        csvContent += `${formatDate(item.date)},${item.crop},${item.quantity}\n`;
+      });
+      
+      // Donation data
+      csvContent += "\nDonation Data\nDate,Crop,Quantity,Community,Location\n";
+      data.donated.forEach(item => {
+        csvContent += `${formatDate(item.date)},${item.crop},${item.quantity},${item.community || ''},${item.location || ''}\n`;
+      });
+      
+      // Create download link
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "crop_tracker_report.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+</body>
+</html>

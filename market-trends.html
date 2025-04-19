@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Trends | Crop Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <a href="main.html" onclick="return goToMainPage()" class="go-back-link">
+            <span class="material-icons-outlined">arrow_back</span>
+            <span class="go-back-text">Go Back</span>
+          </a>
+        </div>
+        <div class="header-right">
+          <!-- Copy the same header-right content from your index.html -->
+          <div class="notification-icon-container">
+            <span class="material-icons-outlined" id="notificationBell">notifications</span>
+            <span class="notification-badge" id="notificationBadge">0</span>
+            <div class="notification-dropdown" id="notificationDropdown">
+              <div class="notification-header">
+                <h3>Notifications</h3>
+                <span class="mark-all-read" id="markAllRead">Mark all as read</span>
+              </div>
+              <div class="notification-list" id="notificationList">
+                <!-- Notifications will be added here dynamically -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="email-icon-container">
+            <span class="material-icons-outlined" id="emailIcon">email</span>
+            <div class="email-dropdown" id="emailDropdown">
+              <div class="email-header">
+                <h3>Feedback</h3>
+              </div>
+              <div class="email-form">
+                <textarea id="feedbackMessage" placeholder="Enter your feedback here..."></textarea>
+                <button id="sendFeedback">Send Feedback</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="profile-icon-container">
+            <span class="material-icons-outlined" id="profileIcon">account_circle</span>
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="profile-header">
+                <h3>User Profile</h3>
+              </div>
+              <div class="profile-options">
+                <a href="#" id="viewProfile">View Profile</a>
+                <a href="settings-page.html">Settings</a>
+                <a href="#" id="logoutBtn">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+    
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <span class="material-icons-outlined">grass</span> Crop Tracker
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+
+        <ul class="sidebar-list">
+          <li class="sidebar-list-item">
+            <a href="index.html">
+              <span class="material-icons-outlined">dashboard</span> Dashboard
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="market-trends.html">
+              <span class="material-icons-outlined">trending_up</span> Market Trends
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="cs-page.html"> 
+              <span class="material-icons-outlined">eco</span> Consumed Crops
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="harvest-page.html">
+              <span class="material-icons-outlined">grass</span> Harvest
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="donation-page.html">
+              <span class="material-icons-outlined">volunteer_activism</span> Donated
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="report-page.html">
+              <span class="material-icons-outlined">poll</span> Reports
+            </a>
+          </li>
+          <li class="sidebar-list-item">
+            <a href="settings-page.html">
+              <span class="material-icons-outlined">settings</span> Settings
+            </a>
+          </li>
+        </ul>
+      </aside>
+    
+      <main class="main-container">
+        <div class="main-title">
+          <p class="font-weight-bold">MARKET TRENDS</p>
+        </div>
+
+        <div class="market-trends-controls">
+          <div class="trends-search">
+            <input type="text" id="cropSearch" placeholder="Search for crops...">
+            <button id="searchBtn" class="material-icons-outlined">search</button>
+          </div>
+          <div class="trends-refresh">
+            <button id="refreshData" class="refresh-btn">
+              <span class="material-icons-outlined">refresh</span> Refresh Data
+            </button>
+          </div>
+        </div>
+
+        <div class="market-trends-container">
+          <div class="price-display-card">
+            <h3>Current Market Prices</h3>
+            <div class="price-table-container">
+              <table id="priceTable">
+                <thead>
+                  <tr>
+                    <th>Crop</th>
+                    <th>Price (per kg)</th>
+                    <th>Change (24h)</th>
+                    <th>Source</th>
+                    <th>Last Updated</th>
+                  </tr>
+                </thead>
+                <tbody id="priceData">
+                  <!-- Data will be loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="trends-chart-card">
+            <h3>Price Trends</h3>
+            <div class="chart-toggle">
+              <button class="toggle-btn active" data-period="7d">7 Days</button>
+              <button class="toggle-btn" data-period="30d">30 Days</button>
+              <button class="toggle-btn" data-period="90d">90 Days</button>
+            </div>
+            <div id="trends-chart"></div>
+          </div>
+        </div>
+      </main>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
+      <script src="scripts.js"></script>
+      <script src="market-trends.js"></script>
+    </div>
+  </body>
+</html>
