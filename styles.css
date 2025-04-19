@@ -535,6 +535,36 @@ body {
   }
 }
 
+.sidebar-brand {
+  margin-top: 15px;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.sidebar-brand:hover {
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.leaf {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+  animation: falling linear forwards;
+  pointer-events: none;
+}
+
+@keyframes falling {
+  to {
+    transform: translateY(100vh) rotate(360deg);
+  }
+}
+
 #sidebar {
   grid-area: sidebar;
   height: 100%;

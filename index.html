@@ -67,9 +67,10 @@
     
       <aside id="sidebar">
         <div class="sidebar-title">
-          <div class="sidebar-brand">
+          <div class="sidebar-brand" id="cropTrackerBrand">
             <span class="material-icons-outlined">grass</span> Crop Tracker
           </div>
+          <div id="leafContainer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; overflow: hidden;"></div>
           <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
         </div>
 

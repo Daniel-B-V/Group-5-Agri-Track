@@ -383,3 +383,83 @@ function initializePage() {
 }
 
 window.addEventListener('DOMContentLoaded', initializePage);
+
+document.addEventListener('DOMContentLoaded', function() {
+  const cropTrackerBrand = document.getElementById('cropTrackerBrand');
+  const leafContainer = document.getElementById('leafContainer');
+  
+  // Array of leaf emojis or colors
+  const leaves = [
+    '🍁', // Maple leaf
+    '🍂', // Fallen leaf
+    '🍃', // Leaf fluttering in wind
+    '🌿', // Herb
+    '🌱', // Seedling
+    '🌾', // Ear of rice
+    '🥬'  // Leafy green
+  ];
+  
+  // Colors for the leaves
+  const colors = [
+    '#e67e22', // Pumpkin
+    '#e74c3c', // Alizarin
+    '#f1c40f', // Sunflower
+    '#2ecc71', // Emerald
+    '#1abc9c', // Turquoise
+    '#3498db', // Peter River
+    '#9b59b6'  // Amethyst
+  ];
+  
+  cropTrackerBrand.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    // Clear any existing leaves
+    leafContainer.innerHTML = '';
+    
+    // Create 50 falling leaves
+    for (let i = 0; i < 50; i++) {
+      createLeaf();
+    }
+    
+    // Remove leaves after animation completes (5 seconds)
+    setTimeout(() => {
+      leafContainer.innerHTML = '';
+    }, 5000);
+  });
+  
+  function createLeaf() {
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    
+    // Random properties for each leaf
+    const size = Math.random() * 20 + 10; // 10-30px
+    const left = Math.random() * 100; // 0-100% of viewport width
+    const animationDuration = Math.random() * 3 + 2; // 2-5 seconds
+    const delay = Math.random() * 2; // 0-2 seconds delay
+    const rotation = Math.random() * 720; // 0-720 degrees
+    
+    // Randomly choose between emoji or colored div
+    if (Math.random() > 0.5) {
+      // Emoji leaf
+      const leafEmoji = leaves[Math.floor(Math.random() * leaves.length)];
+      leaf.textContent = leafEmoji;
+      leaf.style.fontSize = `${size}px`;
+    } else {
+      // Colored leaf
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      leaf.style.backgroundColor = color;
+      leaf.style.width = `${size}px`;
+      leaf.style.height = `${size}px`;
+      leaf.style.borderRadius = '50% 0 50% 50%';
+      leaf.style.transform = `rotate(${Math.random() * 360}deg)`;
+    }
+    
+    leaf.style.left = `${left}%`;
+    leaf.style.top = '-30px';
+    leaf.style.animationDuration = `${animationDuration}s`;
+    leaf.style.animationDelay = `${delay}s`;
+    leaf.style.opacity = Math.random() * 0.5 + 0.5; // 0.5-1 opacity
+    
+    leafContainer.appendChild(leaf);
+  }
+});
