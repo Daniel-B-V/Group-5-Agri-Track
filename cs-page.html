@@ -104,85 +104,79 @@
       color: white;
     }
 
-    /* Instruction Modal Styles */
-  .instruction-modal {
-    display: none;
-    position: fixed;
-    z-index: 1100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
-    animation: fadeIn 0.3s ease;
-  }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
 
-  .instruction-content {
-    background-color: #f8f9fa;
-    margin: 10% auto;
-    padding: 30px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 550px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    animation: slideUp 0.4s ease;
-  }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-  @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
+    .close:hover {
+      color: black;
+    }
 
-  .instruction-title {
-    color: #367952;
-    margin-top: 0;
-    font-size: 24px;
-    border-bottom: 2px solid #367952;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
+    .modal-title {
+      margin-top: 0;
+      color: #367952;
+    }
 
-  .instruction-text {
-    margin: 20px 0;
-    line-height: 1.6;
-    color: #444;
-  }
+    .modal-input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
 
-  .instruction-button {
-    background-color: #367952;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
-    display: block;
-    margin: 25px auto 0;
-    transition: all 0.3s ease;
-  }
+    .modal-select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background-color: white;
+    }
 
-  .instruction-button:hover {
-    background-color: #2a6142;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
+    .modal-button {
+      background-color: #367952;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 100%;
+    }
 
-  .instruction-list {
-    margin: 15px 0;
-    padding-left: 20px;
-  }
-
-  .instruction-list li {
-    margin-bottom: 10px;
-    color: #444;
-  }
+    .modal-button:hover {
+      background-color: #2a6142;
+    }
 
     .quantity-label {
       display: block;
@@ -289,7 +283,6 @@
     .top-alert.error {
       background-color: #f44336;
     }
-
   </style>
 </head>
 <body>
