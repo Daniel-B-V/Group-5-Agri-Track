@@ -7,6 +7,109 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+
+    <style>
+      /* Mobile-specific styles */
+      @media screen and (max-width: 768px) {
+        .grid-container {
+          grid-template-columns: 1fr;
+          grid-template-rows: 60px 1fr;
+          grid-template-areas:
+            "header"
+            "main";
+        }
+        
+        .header {
+          height: 60px;
+          padding: 0 15px;
+        }
+        
+        .menu-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+        }
+        
+        .header-right {
+          gap: 15px;
+        }
+        
+        .main-container {
+          padding: 15px;
+        }
+        
+        .main-cards {
+          grid-template-columns: 1fr 1fr;
+          gap: 10px;
+        }
+        
+        .card {
+          padding: 15px;
+        }
+        
+        .card-inner > p {
+          font-size: 14px;
+        }
+        
+        .card-inner > span {
+          font-size: 24px;
+        }
+        
+        .card > span {
+          font-size: 16px;
+        }
+        
+        .charts-side-by-side {
+          flex-direction: column;
+        }
+        
+        .notification-dropdown,
+        .email-dropdown {
+          width: 280px;
+          right: -30px;
+        }
+        
+        .profile-dropdown {
+          width: 200px;
+        }
+        
+        .go-back-text {
+          display: none;
+        }
+        
+        .sidebar-brand {
+          font-size: 18px;
+        }
+        
+        .sidebar-list-item {
+          padding: 15px;
+        }
+      }
+      
+      @media screen and (max-width: 480px) {
+        .main-cards {
+          grid-template-columns: 1fr;
+        }
+        
+        .notification-dropdown,
+        .email-dropdown {
+          width: 250px;
+          right: -20px;
+        }
+        
+        .header-right {
+          gap: 10px;
+        }
+        
+        .notification-icon-container .material-icons-outlined,
+        .email-icon-container .material-icons-outlined,
+        .profile-icon-container .material-icons-outlined {
+          font-size: 22px;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="grid-container">
@@ -172,5 +275,37 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
     <script src="scripts.js"></script>
+    <script>
+      // Mobile-specific JavaScript
+      function openSidebar() {
+        document.getElementById('sidebar').classList.add('sidebar-responsive');
+      }
+      
+      function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('sidebar-responsive');
+      }
+      
+      // Adjust chart sizes on mobile
+      function adjustChartsForMobile() {
+        if (window.innerWidth <= 768) {
+          // You would adjust your chart initialization here
+          // For example:
+          /*
+          if (window.barChart) {
+            window.barChart.updateOptions({
+              chart: {
+                width: '100%',
+                height: 300
+              }
+            });
+          }
+          */
+        }
+      }
+      
+      // Initialize on load and on resize
+      window.addEventListener('load', adjustChartsForMobile);
+      window.addEventListener('resize', adjustChartsForMobile);
+    </script>
   </body>
 </html>
