@@ -358,3 +358,265 @@ function resetPassword() {
         return false;
     }
 }
+
+// First, let's update the CSS to improve the mobile layout
+const styleTag = document.createElement('style');
+styleTag.textContent = `
+/* Mobile authentication styles */
+@media (max-width: 768px) {
+    .auth-container {
+        width: 95%;
+        min-height: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .form-container {
+        position: relative;
+        width: 100%;
+        display: block;
+        height: auto;
+        padding-bottom: 30px;
+    }
+    
+    .sign-in-container {
+        display: block;
+    }
+    
+    .sign-up-container {
+        display: none;
+        opacity: 1;
+        z-index: 5;
+    }
+    
+    form {
+        padding: 0 20px;
+    }
+    
+    .auth-container.right-panel-active .sign-in-container {
+        transform: none;
+        display: none;
+    }
+    
+    .auth-container.right-panel-active .sign-up-container {
+        transform: none;
+        display: block;
+    }
+    
+    .mb-form-toggle {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        font-size: 14px;
+    }
+    
+    .mb-form-toggle a {
+        color: #2e7d32;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    
+    .mb-form-toggle a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Make buttons full width on mobile */
+    form button {
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    /* Adjust input fields for better mobile experience */
+    .infield {
+        margin: 12px 0;
+    }
+    
+    input {
+        padding: 15px;
+        font-size: 16px; /* Better for mobile tapping */
+    }
+    
+    /* Modal adjustments for mobile */
+    .modal.active {
+        align-items: center;
+        padding: 10px;
+    }
+    
+    /* Improve forgot password modal on mobile */
+    #forgotPasswordModal .auth-container {
+        padding: 0;
+        max-width: 95%;
+    }
+    
+    /* Better spacing and font sizes for mobile */
+    .form-container h1 {
+        font-size: 24px;
+        margin: 15px 0;
+    }
+    
+    .forgot {
+        margin: 20px 0;
+        font-size: 16px;
+    }
+    
+    .logo-container {
+        margin-top: 30px;
+    }
+    
+    /* Fix error message display */
+    .error-message {
+        width: 100%;
+        padding: 8px;
+        text-align: center;
+    }
+}
+
+/* Fix for iOS input zoom issues */
+@media screen and (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+}
+`;
+
+document.head.appendChild(styleTag);
+
+// Add mobile toggle links for switching between login and signup forms
+document.addEventListener('DOMContentLoaded', function() {
+    // Create mobile toggle for sign in form
+    const signInToggle = document.createElement('div');
+    signInToggle.className = 'mb-form-toggle';
+    signInToggle.innerHTML = `Don't have an account? <a href="#" id="mobileSignUpToggle">Sign Up</a>`;
+    
+    // Create mobile toggle for sign up form
+    const signUpToggle = document.createElement('div');
+    signUpToggle.className = 'mb-form-toggle';
+    signUpToggle.innerHTML = `Already have an account? <a href="#" id="mobileSignInToggle">Sign In</a>`;
+    
+    // Add these toggles to the respective forms
+    const signInForm = document.querySelector('.sign-in-container form');
+    const signUpForm = document.querySelector('.sign-up-container form');
+    
+    if (signInForm && signUpForm) {
+        signInForm.appendChild(signInToggle);
+        signUpForm.appendChild(signUpToggle);
+        
+        // Add click handlers for mobile form switching
+        document.getElementById('mobileSignUpToggle').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('authContainer').classList.add('right-panel-active');
+        });
+        
+        document.getElementById('mobileSignInToggle').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('authContainer').classList.remove('right-panel-active');
+        });
+    }
+    
+    // Fix issue with form transitions on mobile
+    const fixMobileTransitions = function() {
+        const authContainer = document.getElementById('authContainer');
+        const signInContainer = document.querySelector('.sign-in-container');
+        const signUpContainer = document.querySelector('.sign-up-container');
+        
+        if (window.innerWidth <= 768) {
+            // Mobile view: no transitions, just show/hide
+            if (authContainer.classList.contains('right-panel-active')) {
+                signInContainer.style.display = 'none';
+                signUpContainer.style.display = 'block';
+            } else {
+                signInContainer.style.display = 'block';
+                signUpContainer.style.display = 'none';
+            }
+        } else {
+            // Desktop view: restore original behavior
+            signInContainer.style.display = '';
+            signUpContainer.style.display = '';
+        }
+    };
+    
+    // Run on load and when class changes
+    fixMobileTransitions();
+    
+    // Create a MutationObserver to watch for class changes
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'class') {
+                fixMobileTransitions();
+            }
+        });
+    });
+    
+    // Start observing the auth container
+    if (document.getElementById('authContainer')) {
+        observer.observe(document.getElementById('authContainer'), { attributes: true });
+    }
+    
+    // Also run on resize
+    window.addEventListener('resize', fixMobileTransitions);
+    
+    // Fix the forgot password modal for mobile
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    if (forgotPasswordForm) {
+        // Adjust padding for better mobile view
+        if (window.innerWidth <= 768) {
+            forgotPasswordForm.style.padding = '0 20px';
+        }
+    }
+    
+    // Improve form input experience on mobile
+    document.querySelectorAll('input').forEach(input => {
+        // Prevent auto-zoom on focus in iOS
+        input.setAttribute('autocomplete', 'off');
+        
+        // Better handling of field validation
+        input.addEventListener('invalid', function(e) {
+            e.preventDefault();
+            this.classList.add('error');
+        });
+        
+        input.addEventListener('input', function() {
+            this.classList.remove('error');
+        });
+    });
+});
+
+// Fix for modal height on mobile when keyboard is shown
+function adjustModalHeight() {
+    const modal = document.getElementById('authModal');
+    if (!modal) return;
+    
+    const visibleHeight = window.innerHeight;
+    
+    if (window.innerWidth <= 768) {
+        if (visibleHeight < window.outerHeight * 0.8) {
+            // Keyboard is likely shown
+            modal.style.alignItems = 'flex-start';
+            modal.style.paddingTop = '10px';
+        } else {
+            // Keyboard is hidden
+            modal.style.alignItems = 'center';
+            modal.style.paddingTop = '0';
+        }
+    }
+}
+
+// Listen for resize events which happen when keyboard appears/disappears
+window.addEventListener('resize', adjustModalHeight);
+
+// Helper function to improve error messaging
+function showError(elementId, message, isSuccess = false) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = message;
+        element.style.color = isSuccess ? 'green' : 'red';
+        element.style.display = message ? 'block' : 'none';
+        
+        // For mobile: scroll to error message
+        if (message && window.innerWidth <= 768) {
+            setTimeout(() => {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+    }
+}

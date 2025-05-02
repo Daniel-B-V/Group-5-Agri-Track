@@ -206,3 +206,58 @@ document.addEventListener('DOMContentLoaded', function() {
     // You can implement this using your existing notification system
     console.log(`[${type}] ${message}`);
   }
+
+  // Add these functions to your scripts.js file
+
+// Make sure these functions are available globally
+function openSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const menuIcon = document.querySelector('.menu-icon');
+  
+  sidebar.classList.add("sidebar-responsive");
+  
+  // Hide the menu icon when sidebar is open
+  if (menuIcon) {
+    menuIcon.style.display = "none";
+  }
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const menuIcon = document.querySelector('.menu-icon');
+  
+  sidebar.classList.remove("sidebar-responsive");
+  
+  // Show the menu icon again when sidebar is closed
+  if (menuIcon) {
+    menuIcon.style.display = "inline";
+  }
+}
+
+// Add this to your document ready function or at the end of your script
+document.addEventListener('DOMContentLoaded', function() {
+  // Fix for menu icon click event
+  const menuIcon = document.querySelector('.menu-icon');
+  if (menuIcon) {
+    // Make sure it's clickable
+    menuIcon.style.cursor = 'pointer';
+    
+    // Add event listener directly to ensure it works
+    menuIcon.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openSidebar();
+    });
+  }
+  
+  // Ensure close button works too
+  const closeBtn = document.querySelector('.sidebar-title > span');
+  if (closeBtn) {
+    closeBtn.style.cursor = 'pointer';
+    
+    closeBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      closeSidebar();
+    });
+  }
+});

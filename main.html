@@ -88,7 +88,7 @@
             <source src="images/bg-crops.mp4" type="video/mp4">
         </video>
 
-        <!-- LOGIN/SIGNUP MODAL -->
+        <!-- Updated HTML with Mobile-Friendly Form Toggle Links -->
         <div id="authModal" class="modal">
             <div class="auth-container" id="authContainer">  
                 <div class="form-container sign-up-container">
@@ -100,18 +100,19 @@
                         <h1>Create Account</h1>
                         <div id="signupError" class="error-message"></div>
                         <div class="infield">
-                            <input type="text" id="signupName" placeholder="Name" />
+                            <input type="text" id="signupName" placeholder="Name" autocomplete="name" />
                             <label></label>
                         </div>
                         <div class="infield">
-                            <input type="email" id="signupEmail" placeholder="Email" name="email"/>
+                            <input type="email" id="signupEmail" placeholder="Email" name="email" autocomplete="email" />
                             <label></label>
                         </div>
                         <div class="infield">
-                            <input type="password" id="signupPassword" placeholder="Password" />
+                            <input type="password" id="signupPassword" placeholder="Password" autocomplete="new-password" />
                             <label></label>
                         </div>
                         <button type="button" onclick="signupUser()">Sign Up</button>
+                        <!-- Mobile toggle link will be added here dynamically -->
                     </form>
                 </div>
                 <div class="form-container sign-in-container">
@@ -123,15 +124,16 @@
                         <h1>Sign in</h1>
                         <div id="loginError" class="error-message"></div>
                         <div class="infield">
-                            <input type="email" id="loginEmail" placeholder="Email" name="email"/>
+                            <input type="email" id="loginEmail" placeholder="Email" name="email" autocomplete="email" />
                             <label></label>
                         </div>
                         <div class="infield">
-                            <input type="password" id="loginPassword" placeholder="Password" />
+                            <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" />
                             <label></label>
                         </div>
                         <a href="#" onclick="return showForgotPassword()" class="forgot">Forgot your password?</a>
                         <button type="button" onclick="loginUser()">Sign In</button>
+                        <!-- Mobile toggle link will be added here dynamically -->
                     </form>
                 </div>
                 <div class="overlay-container" id="overlayCon">
@@ -158,7 +160,7 @@
             </div>
         </div>
 
-        <!-- Forgot Password Modal remains the same -->
+        <!-- Updated Forgot Password Modal -->
         <div id="forgotPasswordModal" class="modal">
             <div class="auth-container">
                 <form id="forgotPasswordForm">
@@ -169,15 +171,15 @@
                     <h1>Reset Password</h1>
                     <div id="forgotPasswordError" class="error-message"></div>
                     <div class="infield">
-                        <input type="email" id="resetEmail" placeholder="Your Email" required>
+                        <input type="email" id="resetEmail" placeholder="Your Email" required autocomplete="email">
                         <label></label>
                     </div>
                     <div class="infield">
-                        <input type="password" id="oldPassword" placeholder="Old Password" required>
+                        <input type="password" id="oldPassword" placeholder="Old Password" required autocomplete="current-password">
                         <label></label>
                     </div>
                     <div class="infield">
-                        <input type="password" id="newPassword" placeholder="New Password" required>
+                        <input type="password" id="newPassword" placeholder="New Password" required autocomplete="new-password">
                         <label></label>
                     </div>
                     <button type="button" onclick="resetPassword()">Reset Password</button>
@@ -194,7 +196,7 @@
                             Farm Management
                         </h1>
                         <p class="left-to-right play-on-scroll delay-2">
-                            Our innovative platform helps farmers and agricultural businesses efficiently track their crops from harvest to consumption. Monitor yields, record usage, analyze trends, and optimize your farm's productivity with our easy-to-use digital tools. Say goodbye to paper records and embrace data-driven farming decisions.
+                            Our innovative platform helps farmers and agricultural businesses efficiently track their crops from harvest to consumption. Monitor yields, record usage, analyze trends, and optimize your farm's productivity with our easy-to-use digital tools.
                         </p>
                         <div class="left-to-right play-on-scroll delay-4">                   
                             <button id="getStartedBtn">Get Started</button>                      
@@ -204,56 +206,80 @@
             </div>
         </div>
     </section>
-
-    <!-- ABOUT US SECTION -->
-    <section id="about" class="fullheight align-items-center bg-img bg-img-fixed"
-    style="background-image: url(images/bg-about-us.jpg); background-color: rgba(0,0,0,0.7); background-blend-mode: overlay;">
-    <div class="container">
-        <div class="row">
-            <div class="col-6 col-xs-12">
-                <div class="about-content">
-                    <h1 class="left-to-right play-on-scroll">Our Mission</h1>
-                    <div class="left-to-right play-on-scroll delay-2">
-                        <div class="mission-card">
-                            <i class="fas fa-seedling"></i>
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 text-center">
+                    <h1 class="play-on-scroll section-title">Our Mission</h1>
+                    <p class="play-on-scroll delay-2 section-subtitle">Helping farmers track and optimize their harvests through innovative technology</p>
+                </div>
+    
+                <div class="col-12">
+                    <div class="mission-cards-row">
+                        <div class="mission-card play-on-scroll delay-2">
+                            <div class="card-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
                             <h3>Harvest Management</h3>
-                            <p>We created Agri-Track to help farmers efficiently manage and track their harvests, ensuring optimal yields and reducing waste through smart planning tools.</p>
+                            <p>
+                                We created Agri-Track to help farmers efficiently manage and track
+                                their harvests, ensuring optimal yields and reducing waste through
+                                smart planning tools.
+                            </p>
                         </div>
-                    </div>
-                    <div class="left-to-right play-on-scroll delay-4">
-                        <div class="mission-card">
-                            <i class="fas fa-recycle"></i>
+                        
+                        <div class="mission-card play-on-scroll delay-4">
+                            <div class="card-icon">
+                                <i class="fas fa-recycle"></i>
+                            </div>
                             <h3>Food Waste Reduction</h3>
-                            <p>Our platform connects farmers with donation networks to redistribute excess crops, solving food waste while helping communities in need.</p>
+                            <p>
+                                Our platform connects farmers with donation networks to redistribute
+                                excess crops, solving food waste while helping communities in need.
+                            </p>
                         </div>
-                    </div>
-                    <div class="left-to-right play-on-scroll delay-6">
-                        <div class="mission-card">
-                            <i class="fas fa-tractor"></i>
+                        
+                        <div class="mission-card play-on-scroll delay-6">
+                            <div class="card-icon">
+                                <i class="fas fa-tractor"></i>
+                            </div>
                             <h3>Farm Management</h3>
-                            <p>Comprehensive tools to manage all aspects of your farm operations, from planting schedules to inventory tracking and sales management.</p>
+                            <p>
+                                Comprehensive tools to manage all aspects of your farm operations,
+                                from planting schedules to inventory tracking and sales management.
+                            </p>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-6 col-xs-12">
-                <div class="about-story right-to-left play-on-scroll">
-                    <h2>Our Story</h2>
-                    <p>Agri-Track was founded in 2025 by a team of tech enthusiasts who saw the need for better farm management solutions. We noticed that:</p>
-                    <ul>
-                        <li>30-40% of food produced is wasted before reaching consumers</li>
-                        <li>Farmers struggle with inefficient harvest tracking methods</li>
-                        <li>There's no easy way to connect excess produce with those in need</li>
-                    </ul>
-                    <p>Our solution combines cutting-edge technology with simple, farmer-friendly interfaces to solve these problems.</p>
-                    <a href="#blog" class="learn-more-btn-wrapper">
-                        <button class="learn-more-btn">Learn More About Our Features</button>
-                    </a>
+    
+                <div class="col-12">
+                    <div class="story-content play-on-scroll delay-8">
+                        <h2>Our Story</h2>
+                        <p>
+                            Agri-Track was founded in 2025 by a team of tech enthusiasts who saw
+                            the need for better farm management solutions. We noticed that:
+                        </p>
+                        <ul>
+                            <li>30-40% of food produced is wasted before reaching consumers</li>
+                            <li>Farmers struggle with inefficient harvest tracking methods</li>
+                            <li>There's no easy way to connect excess produce with those in need</li>
+                        </ul>
+                        <p>
+                            Our solution combines cutting-edge technology with simple,
+                            farmer-friendly interfaces to solve these problems.
+                        </p>
+                        <div class="text-center mt-4">
+                            <a href="#blog" class="learn-more-btn-wrapper">
+                                <button class="learn-more-btn">
+                                    Learn More About Our Features
+                                </button>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    </section>
+    </section>   
 
         <!-- BLOG SECTION -->
     <section id="blog" class="blog-section">
@@ -618,6 +644,15 @@
         });
         </script>
     <script src="lp-scripts.js"></script>
+    <!-- Add this script tag after your existing scripts -->
+    <script>
+        // Load the mobile auth fix script
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileAuthScript = document.createElement('script');
+            mobileAuthScript.src = 'js/mobile-auth-fix.js'; // Assuming you'll save the JS fix in this location
+            document.body.appendChild(mobileAuthScript);
+        });
+        </script>
 
 </body>
 </html>

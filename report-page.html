@@ -6,21 +6,23 @@
   <title>Crop Tracker - Reports</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
   <style>
     .report-container {
       max-width: 1200px;
+      width: 100%;
       margin: 20px auto;
       padding: 20px;
       background-color: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-sizing: border-box;
     }
 
     .report-header {
       display: flex;
+      flex-direction: row;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 30px;
@@ -72,11 +74,12 @@
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      overflow-x: auto;
     }
 
     .summary-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 20px;
       margin-bottom: 30px;
     }
@@ -107,6 +110,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 30px;
+      min-width: 500px;
     }
 
     .data-table th, .data-table td {
@@ -127,6 +131,7 @@
 
     .export-buttons {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-top: 20px;
     }
@@ -166,7 +171,7 @@
       }
     }
 
-    /* Header styles matching cs-page.html */
+    /* Header styles */
     .header {
       display: flex;
       justify-content: space-between;
@@ -200,11 +205,96 @@
 
     .main-container {
       padding: 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Table scrolling indicator for mobile */
+    .table-scroll-indicator {
+      display: none;
+      text-align: center;
+      padding: 5px;
+      font-size: 14px;
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Mobile Responsive Styles - UPDATED */
+    @media screen and (max-width: 768px) {
+      .report-container {
+        padding: 15px;
+        margin: 10px;
+        margin-top: 60px; /* Added space for fixed header */
+      }
+      
+      .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .report-title {
+        font-size: 20px;
+      }
+      
+      .report-period {
+        width: 100%;
+      }
+      
+      .period-selector {
+        width: 100%;
+      }
+      
+      .summary-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .section-title {
+        font-size: 18px;
+      }
+      
+      .export-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .export-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .chart-container {
+        padding: 15px 10px;
+      }
+      
+      .table-scroll-indicator {
+        display: block;
+      }
+      
+      /* FIXED HEADER STYLES FOR MOBILE */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 10px 15px;
+        z-index: 1000;
+      }
+      
+      .go-back-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      
+      .main-container {
+        padding-top: 0;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Header matching cs-page.html -->
+  <!-- Fixed Header -->
   <header class="header">
     <div class="header-left">
       <a href="index.html" class="go-back-btn">
@@ -268,50 +358,60 @@
 
       <div class="report-section">
         <h2 class="section-title"><span class="material-icons-outlined">table_chart</span> Detailed Data</h2>
+        
         <div class="chart-container">
           <h3>Harvest Records</h3>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Crop</th>
-                <th>Quantity</th>
-              </tr>
-            </thead>
-            <tbody id="harvestTableBody">
-              <!-- Will be populated by JavaScript -->
-            </tbody>
-          </table>
+          <div class="table-scroll-indicator">← Swipe to view full table →</div>
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Crop</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody id="harvestTableBody">
+                <!-- Will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
 
           <h3>Consumption Records</h3>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Crop</th>
-                <th>Quantity</th>
-              </tr>
-            </thead>
-            <tbody id="consumptionTableBody">
-              <!-- Will be populated by JavaScript -->
-            </tbody>
-          </table>
+          <div class="table-scroll-indicator">← Swipe to view full table →</div>
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Crop</th>
+                  <th>Quantity</th>
+                </tr>
+              </thead>
+              <tbody id="consumptionTableBody">
+                <!-- Will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
 
           <h3>Donation Records</h3>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Crop</th>
-                <th>Quantity</th>
-                <th>Community</th>
-                <th>Location</th>
-              </tr>
-            </thead>
-            <tbody id="donationTableBody">
-              <!-- Will be populated by JavaScript -->
-            </tbody>
-          </table>
+          <div class="table-scroll-indicator">← Swipe to view full table →</div>
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Crop</th>
+                  <th>Quantity</th>
+                  <th>Community</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody id="donationTableBody">
+                <!-- Will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -355,7 +455,27 @@
     // Initialize the page
     window.addEventListener('DOMContentLoaded', () => {
       updateReportData();
+      adjustForMobile();
     });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      adjustForMobile();
+    });
+
+    // Adjust layout for mobile
+    function adjustForMobile() {
+      const isMobile = window.innerWidth <= 768;
+      
+      // Adjust chart heights
+      const chartHeight = isMobile ? 300 : 350;
+      if (cropPerformanceChart) {
+        cropPerformanceChart.updateOptions({chart: {height: chartHeight}});
+      }
+      if (monthlyTrendsChart) {
+        monthlyTrendsChart.updateOptions({chart: {height: chartHeight}});
+      }
+    }
 
     // Update report data based on selected period
     function updateReportData() {
@@ -448,7 +568,7 @@
         ],
         chart: {
           type: 'bar',
-          height: 350,
+          height: window.innerWidth <= 768 ? 300 : 350,
           stacked: true,
           toolbar: { show: false }
         },
@@ -508,7 +628,7 @@
         ],
         chart: {
           type: 'line',
-          height: 350,
+          height: window.innerWidth <= 768 ? 300 : 350,
           toolbar: { show: false }
         },
         stroke: { curve: 'smooth' },
@@ -615,126 +735,126 @@
     }
 
     function exportToPDF() {
-    // Show loading indicator
-    const loadingIndicator = document.createElement('div');
-    loadingIndicator.style.position = 'fixed';
-    loadingIndicator.style.top = '0';
-    loadingIndicator.style.left = '0';
-    loadingIndicator.style.width = '100%';
-    loadingIndicator.style.height = '100%';
-    loadingIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
-    loadingIndicator.style.display = 'flex';
-    loadingIndicator.style.justifyContent = 'center';
-    loadingIndicator.style.alignItems = 'center';
-    loadingIndicator.style.zIndex = '9999';
-    loadingIndicator.innerHTML = `
-      <div style="background: white; padding: 20px; border-radius: 5px; text-align: center;">
-        <p style="font-weight: bold; margin-bottom: 10px;">Generating PDF...</p>
-        <div class="spinner"></div>
-      </div>
-    `;
-    document.body.appendChild(loadingIndicator);
+      // Show loading indicator
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.style.position = 'fixed';
+      loadingIndicator.style.top = '0';
+      loadingIndicator.style.left = '0';
+      loadingIndicator.style.width = '100%';
+      loadingIndicator.style.height = '100%';
+      loadingIndicator.style.backgroundColor = 'rgba(0,0,0,0.5)';
+      loadingIndicator.style.display = 'flex';
+      loadingIndicator.style.justifyContent = 'center';
+      loadingIndicator.style.alignItems = 'center';
+      loadingIndicator.style.zIndex = '9999';
+      loadingIndicator.innerHTML = `
+        <div style="background: white; padding: 20px; border-radius: 5px; text-align: center;">
+          <p style="font-weight: bold; margin-bottom: 10px;">Generating PDF...</p>
+          <div class="spinner"></div>
+        </div>
+      `;
+      document.body.appendChild(loadingIndicator);
 
-    // Add spinner CSS
-    const spinnerCSS = document.createElement('style');
-    spinnerCSS.innerHTML = `
-      .spinner {
-        border: 4px solid rgba(0, 0, 0, 0.1);
-        border-radius: 50%;
-        border-top: 4px solid #367952;
-        width: 30px;
-        height: 30px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto;
-      }
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(spinnerCSS);
-
-    // Elements to exclude from PDF
-    const elementsToHide = document.querySelectorAll('.no-print');
-    
-    // Hide elements before generating PDF
-    elementsToHide.forEach(el => el.style.display = 'none');
-
-    // PDF options
-    const options = {
-      margin: [10, 10, 10, 10],
-      filename: `Crop_Tracker_Report_${new Date().toISOString().slice(0,10)}.pdf`,
-      image: { 
-        type: 'jpeg', 
-        quality: 0.98 
-      },
-      html2canvas: { 
-        scale: 2,
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
-        scrollX: 0,
-        scrollY: 0,
-        letterRendering: true,
-        backgroundColor: '#FFFFFF'
-      },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'portrait',
-        compress: true
-      },
-      pagebreak: { 
-        mode: ['avoid-all', 'css', 'legacy'] 
-      }
-    };
-
-    // Get the element to print
-    const element = document.querySelector('.report-container');
-    
-    // Add timestamp to the PDF
-    const timestamp = document.createElement('div');
-    timestamp.style.textAlign = 'right';
-    timestamp.style.marginBottom = '20px';
-    timestamp.style.fontSize = '12px';
-    timestamp.style.color = '#666';
-    timestamp.textContent = `Report generated on ${new Date().toLocaleString()}`;
-    element.insertBefore(timestamp, element.firstChild);
-
-    // Generate PDF
-    html2pdf()
-      .set(options)
-      .from(element)
-      .save()
-      .then(() => {
-        // Remove timestamp
-        element.removeChild(timestamp);
-        
-        // Remove loading indicator
-        document.body.removeChild(loadingIndicator);
-        document.head.removeChild(spinnerCSS);
-        
-        // Restore hidden elements after PDF generation
-        elementsToHide.forEach(el => el.style.display = '');
-      })
-      .catch(err => {
-        console.error('Error generating PDF:', err);
-        
-        // Remove timestamp if it exists
-        if (element.contains(timestamp)) {
-          element.removeChild(timestamp);
+      // Add spinner CSS
+      const spinnerCSS = document.createElement('style');
+      spinnerCSS.innerHTML = `
+        .spinner {
+          border: 4px solid rgba(0, 0, 0, 0.1);
+          border-radius: 50%;
+          border-top: 4px solid #367952;
+          width: 30px;
+          height: 30px;
+          animation: spin 1s linear infinite;
+          margin: 0 auto;
         }
-        
-        // Remove loading indicator
-        document.body.removeChild(loadingIndicator);
-        document.head.removeChild(spinnerCSS);
-        
-        // Restore hidden elements even if there's an error
-        elementsToHide.forEach(el => el.style.display = '');
-        
-        alert('Error generating PDF. Please try again.');
-      });
-  }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(spinnerCSS);
+
+      // Elements to exclude from PDF
+      const elementsToHide = document.querySelectorAll('.no-print');
+      
+      // Hide elements before generating PDF
+      elementsToHide.forEach(el => el.style.display = 'none');
+
+      // PDF options
+      const options = {
+        margin: [10, 10, 10, 10],
+        filename: `Crop_Tracker_Report_${new Date().toISOString().slice(0,10)}.pdf`,
+        image: { 
+          type: 'jpeg', 
+          quality: 0.98 
+        },
+        html2canvas: { 
+          scale: 2,
+          logging: false,
+          useCORS: true,
+          allowTaint: true,
+          scrollX: 0,
+          scrollY: 0,
+          letterRendering: true,
+          backgroundColor: '#FFFFFF'
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait',
+          compress: true
+        },
+        pagebreak: { 
+          mode: ['avoid-all', 'css', 'legacy'] 
+        }
+      };
+
+      // Get the element to print
+      const element = document.querySelector('.report-container');
+      
+      // Add timestamp to the PDF
+      const timestamp = document.createElement('div');
+      timestamp.style.textAlign = 'right';
+      timestamp.style.marginBottom = '20px';
+      timestamp.style.fontSize = '12px';
+      timestamp.style.color = '#666';
+      timestamp.textContent = `Report generated on ${new Date().toLocaleString()}`;
+      element.insertBefore(timestamp, element.firstChild);
+
+      // Generate PDF
+      html2pdf()
+        .set(options)
+        .from(element)
+        .save()
+        .then(() => {
+          // Remove timestamp
+          element.removeChild(timestamp);
+          
+          // Remove loading indicator
+          document.body.removeChild(loadingIndicator);
+          document.head.removeChild(spinnerCSS);
+          
+          // Restore hidden elements after PDF generation
+          elementsToHide.forEach(el => el.style.display = '');
+        })
+        .catch(err => {
+          console.error('Error generating PDF:', err);
+          
+          // Remove timestamp if it exists
+          if (element.contains(timestamp)) {
+            element.removeChild(timestamp);
+          }
+          
+          // Remove loading indicator
+          document.body.removeChild(loadingIndicator);
+          document.head.removeChild(spinnerCSS);
+          
+          // Restore hidden elements even if there's an error
+          elementsToHide.forEach(el => el.style.display = '');
+          
+          alert('Error generating PDF. Please try again.');
+        });
+    }
   </script>
 </body>
 </html>
