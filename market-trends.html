@@ -15,13 +15,12 @@
           <span class="material-icons-outlined">menu</span>
         </div>
         <div class="header-left">
-          <a href="main.html" onclick="return goToMainPage()" class="go-back-link">
+          <a href="index.html" onclick="return goToMainPage()" class="go-back-link">
             <span class="material-icons-outlined">arrow_back</span>
             <span class="go-back-text">Go Back</span>
           </a>
         </div>
         <div class="header-right">
-          <!-- Copy the same header-right content from your index.html -->
           <div class="notification-icon-container">
             <span class="material-icons-outlined" id="notificationBell">notifications</span>
             <span class="notification-badge" id="notificationBadge">0</span>
@@ -80,7 +79,7 @@
             </a>
           </li>
           <li class="sidebar-list-item">
-            <a href="market-trends.html">
+            <a href="market-trends.html" class="active">
               <span class="material-icons-outlined">trending_up</span> Market Trends
             </a>
           </li>
@@ -114,13 +113,22 @@
     
       <main class="main-container">
         <div class="main-title">
-          <p class="font-weight-bold">MARKET TRENDS</p>
+          <h2 class="font-weight-bold">MARKET TRENDS</h2>
+          <p class="last-updated">Last Updated: May 4, 2025</p>
         </div>
 
         <div class="market-trends-controls">
           <div class="trends-search">
-            <input type="text" id="cropSearch" placeholder="Search for crops...">
-            <button id="searchBtn" class="material-icons-outlined">search</button>
+            <input type="text" id="cropSearch" placeholder="Search for crops..." aria-label="Search crops">
+            <button id="searchBtn" class="material-icons-outlined" aria-label="Search">search</button>
+          </div>
+          <div class="trends-filter">
+            <select id="cropFilter" aria-label="Filter crops">
+              <option value="all">All Crops</option>
+              <option value="up">Price Increase</option>
+              <option value="down">Price Decrease</option>
+              <option value="stable">Stable Prices</option>
+            </select>
           </div>
           <div class="trends-refresh">
             <button id="refreshData" class="refresh-btn">
@@ -131,9 +139,17 @@
 
         <div class="market-trends-container">
           <div class="price-display-card">
-            <h3>Current Market Prices</h3>
+            <div class="card-header">
+              <h3>Current Market Prices</h3>
+              <div class="table-actions">
+                <button id="showMoreBtn" class="action-btn">Show More</button>
+                <button id="exportDataBtn" class="action-btn">
+                  <span class="material-icons-outlined">download</span> Export
+                </button>
+              </div>
+            </div>
             <div class="price-table-container">
-              <table id="priceTable">
+              <table id="priceTable" aria-label="Current crop prices">
                 <thead>
                   <tr>
                     <th>Crop</th>
@@ -141,23 +157,52 @@
                     <th>Change (24h)</th>
                     <th>Source</th>
                     <th>Last Updated</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody id="priceData">
                   <!-- Data will be loaded here -->
                 </tbody>
               </table>
+              <div class="table-footer">
+                <div class="pagination-info">Showing <span id="visibleRows">5</span> of <span id="totalRows">18</span> crops</div>
+                <div class="pagination-controls">
+                  <button id="prevPageBtn" disabled class="pagination-btn">
+                    <span class="material-icons-outlined">chevron_left</span>
+                  </button>
+                  <button id="nextPageBtn" class="pagination-btn">
+                    <span class="material-icons-outlined">chevron_right</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
           <div class="trends-chart-card">
-            <h3>Price Trends</h3>
-            <div class="chart-toggle">
-              <button class="toggle-btn active" data-period="7d">7 Days</button>
-              <button class="toggle-btn" data-period="30d">30 Days</button>
-              <button class="toggle-btn" data-period="90d">90 Days</button>
+            <div class="chart-header">
+              <h3>Price Trends</h3>
+              <div class="chart-actions">
+                <button id="downloadChartBtn" class="action-btn">
+                  <span class="material-icons-outlined">image</span> Save
+                </button>
+              </div>
+            </div>
+            <div class="chart-controls">
+              <div class="chart-toggle">
+                <button class="toggle-btn active" data-period="7d">7 Days</button>
+                <button class="toggle-btn" data-period="30d">30 Days</button>
+                <button class="toggle-btn" data-period="90d">90 Days</button>
+              </div>
+              <div class="crop-selector">
+                <select id="cropSelector" aria-label="Select crop for chart">
+                  <!-- Options will be populated dynamically -->
+                </select>
+              </div>
             </div>
             <div id="trends-chart"></div>
+            <div class="chart-notes">
+              <p><strong>Note:</strong> Prices are in Philippine Peso (₱) per kilogram. Data is updated daily from official sources.</p>
+            </div>
           </div>
         </div>
       </main>
@@ -168,3 +213,648 @@
     </div>
   </body>
 </html>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Enhanced data with more common Philippine crops and updated dates
+  const sampleData = {
+    prices: [
+      { crop: "Rice", price: "₱24.30", change: "+0.8%", changeType: "up", source: "NFA", updated: "May 4, 2025 10:30 AM" },
+      { crop: "Corn", price: "₱10.20", change: "-1.2%", changeType: "down", source: "DA Philippines", updated: "May 4, 2025 10:30 AM" },
+      { crop: "Coconut", price: "₱18.50", change: "+3.2%", changeType: "up", source: "PCA", updated: "May 4, 2025 09:45 AM" },
+      { crop: "Banana", price: "₱12.75", change: "+1.5%", changeType: "up", source: "Local Market", updated: "May 4, 2025 09:30 AM" },
+      { crop: "Sugar Cane", price: "₱8.40", change: "-0.5%", changeType: "down", source: "SRA", updated: "May 4, 2025 10:15 AM" },
+      { crop: "Pineapple", price: "₱16.80", change: "+2.1%", changeType: "up", source: "DA Philippines", updated: "May 4, 2025 10:00 AM" },
+      { crop: "Sweet Potato", price: "₱9.60", change: "+4.2%", changeType: "up", source: "Local Market", updated: "May 4, 2025 09:15 AM" },
+      { crop: "Mango", price: "₱35.20", change: "-2.3%", changeType: "down", source: "DA Philippines", updated: "May 4, 2025 10:45 AM" },
+      { crop: "Cassava", price: "₱7.90", change: "+1.0%", changeType: "up", source: "Local Market", updated: "May 4, 2025 09:20 AM" },
+      { crop: "Eggplant", price: "₱18.30", change: "-1.6%", changeType: "down", source: "Local Market", updated: "May 4, 2025 09:40 AM" },
+      { crop: "Tomatoes", price: "₱22.10", change: "-3.2%", changeType: "down", source: "Local Market", updated: "May 4, 2025 09:45 AM" },
+      { crop: "Calamansi", price: "₱15.40", change: "+2.7%", changeType: "up", source: "Local Market", updated: "May 4, 2025 09:50 AM" },
+      { crop: "Garlic", price: "₱28.90", change: "+5.8%", changeType: "up", source: "DA Philippines", updated: "May 4, 2025 10:20 AM" },
+      { crop: "Onion", price: "₱32.60", change: "-4.1%", changeType: "down", source: "DA Philippines", updated: "May 4, 2025 10:25 AM" },
+      { crop: "Coffee", price: "₱120.50", change: "+1.2%", changeType: "up", source: "DA Philippines", updated: "May 4, 2025 10:35 AM" },
+      { crop: "Cacao", price: "₱85.30", change: "+2.5%", changeType: "up", source: "DA Philippines", updated: "May 4, 2025 10:40 AM" },
+      { crop: "Abaca", price: "₱45.80", change: "+0.3%", changeType: "up", source: "PhilFIDA", updated: "May 4, 2025 10:50 AM" },
+      { crop: "Palay", price: "₱21.40", change: "+0.5%", changeType: "up", source: "NFA", updated: "May 4, 2025 10:55 AM" }
+    ],
+    trends: {
+      "Rice": [24.0, 24.1, 24.2, 24.2, 24.3, 24.3, 24.3],
+      "Corn": [10.3, 10.2, 10.2, 10.1, 10.2, 10.2, 10.2],
+      "Coconut": [17.9, 18.0, 18.1, 18.3, 18.4, 18.5, 18.5],
+      "Banana": [12.5, 12.6, 12.6, 12.7, 12.7, 12.7, 12.75],
+      "Sugar Cane": [8.45, 8.44, 8.43, 8.42, 8.41, 8.40, 8.40],
+      "Pineapple": [16.5, 16.5, 16.6, 16.7, 16.8, 16.8, 16.8],
+      "Sweet Potato": [9.2, 9.3, 9.4, 9.5, 9.5, 9.6, 9.6],
+      "Mango": [36.0, 35.8, 35.7, 35.5, 35.4, 35.3, 35.2],
+      "Cassava": [7.8, 7.8, 7.9, 7.9, 7.9, 7.9, 7.9],
+      "Eggplant": [18.6, 18.5, 18.4, 18.4, 18.3, 18.3, 18.3],
+      "Tomatoes": [22.8, 22.6, 22.5, 22.3, 22.2, 22.1, 22.1],
+      "Calamansi": [15.0, 15.1, 15.2, 15.3, 15.4, 15.4, 15.4],
+      "Garlic": [27.3, 27.7, 28.0, 28.3, 28.6, 28.8, 28.9],
+      "Onion": [34.0, 33.7, 33.4, 33.1, 32.8, 32.7, 32.6],
+      "Coffee": [119.0, 119.3, 119.6, 119.9, 120.2, 120.4, 120.5],
+      "Cacao": [83.2, 83.7, 84.2, 84.6, 85.0, 85.2, 85.3],
+      "Abaca": [45.7, 45.7, 45.7, 45.8, 45.8, 45.8, 45.8],
+      "Palay": [21.3, 21.3, 21.3, 21.4, 21.4, 21.4, 21.4]
+    }
+  };
+
+  let currentChart = null;
+  let selectedCrop = "Rice";
+  let currentPage = 1;
+  const rowsPerPage = 5;
+  let allData = [...sampleData.prices];
+  let filteredData = [...sampleData.prices];
+
+  // Load price data into the table with pagination
+  function loadPriceData(data, page = 1) {
+    const tableBody = document.getElementById('priceData');
+    tableBody.innerHTML = '';
+    
+    const startIndex = (page - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    const paginatedData = data.slice(startIndex, endIndex);
+    
+    paginatedData.forEach(item => {
+      const row = document.createElement('tr');
+      row.dataset.crop = item.crop;
+      
+      row.innerHTML = `
+        <td>${item.crop}</td>
+        <td>${item.price}</td>
+        <td class="price-${item.changeType}">${item.change}</td>
+        <td>${item.source}</td>
+        <td>${item.updated}</td>
+        <td>
+          <button class="view-trend-btn" data-crop="${item.crop}" title="View trend">
+            <span class="material-icons-outlined">show_chart</span>
+          </button>
+        </td>
+      `;
+      
+      tableBody.appendChild(row);
+    });
+    
+    // Update pagination info
+    document.getElementById('visibleRows').textContent = `${startIndex + 1}-${Math.min(endIndex, data.length)}`;
+    document.getElementById('totalRows').textContent = data.length;
+    
+    // Update pagination buttons
+    document.getElementById('prevPageBtn').disabled = page === 1;
+    document.getElementById('nextPageBtn').disabled = endIndex >= data.length;
+    
+    // Update current page
+    currentPage = page;
+  }
+
+  // Initialize or update the trends chart
+  function updateTrendsChart(crop = selectedCrop, period = "7d") {
+    selectedCrop = crop;
+    
+    // Update the crop selector
+    document.getElementById('cropSelector').value = crop;
+    
+    // Determine how many data points to show based on period
+    let dataPoints, labels;
+    
+    if (period === "30d") {
+      // Generate 30 days of data with some variation
+      dataPoints = Array.from({length: 30}, (_, i) => {
+        const baseValue = sampleData.trends[crop][0];
+        const variation = Math.sin(i/3) * (baseValue * 0.05) + Math.random() * (baseValue * 0.02);
+        return parseFloat((baseValue + variation).toFixed(2));
+      });
+      labels = Array.from({length: 30}, (_, i) => {
+        const date = new Date(2025, 3, 5 + i); // Starting from April 5, 2025
+        return date.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
+      });
+    } else if (period === "90d") {
+      // Generate 90 days of data with seasonal variation
+      dataPoints = Array.from({length: 90}, (_, i) => {
+        const baseValue = sampleData.trends[crop][0];
+        const seasonalVar = Math.sin(i/15) * (baseValue * 0.1);
+        const randomVar = (Math.random() - 0.5) * (baseValue * 0.02);
+        return parseFloat((baseValue + seasonalVar + randomVar).toFixed(2));
+      });
+      labels = Array.from({length: 90}, (_, i) => {
+        const date = new Date(2025, 1, 5 + i); // Starting from February 5, 2025
+        return date.toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
+      });
+    } else {
+      // 7 days
+      dataPoints = [...sampleData.trends[crop]];
+      labels = Array.from({length: 7}, (_, i) => {
+        const date = new Date(2025, 4, 28 + i); // Starting from May 28, 2025
+        return date.toLocaleDateString('en-PH', { weekday: 'short' });
+      });
+    }
+    
+    const options = {
+      series: [{
+        name: "Price (₱)",
+        data: dataPoints
+      }],
+      chart: {
+        height: 350,
+        type: 'line',
+        zoom: {
+          enabled: true,
+          type: 'x',
+          autoScaleYaxis: true
+        },
+        animations: {
+          enabled: true,
+          easing: 'easeinout',
+          speed: 800
+        },
+        toolbar: {
+          tools: {
+            download: false // We'll use our custom download button
+          }
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 2
+      },
+      title: {
+        text: `${crop} Price Trend`,
+        align: 'left',
+        style: {
+          fontSize: '16px',
+          fontWeight: 500
+        }
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'],
+          opacity: 0.5
+        },
+      },
+      xaxis: {
+        categories: labels,
+        labels: {
+          rotate: period === "90d" ? -45 : 0,
+          style: {
+            fontSize: '12px'
+          }
+        }
+      },
+      yaxis: {
+        title: {
+          text: 'Price per kg (₱)'
+        },
+        labels: {
+          formatter: function(value) {
+            return '₱' + value.toFixed(2);
+          }
+        }
+      },
+      tooltip: {
+        y: {
+          formatter: function(value) {
+            return '₱' + value.toFixed(2);
+          }
+        }
+      },
+      colors: ['#367952']
+    };
+    
+    if (currentChart) {
+      currentChart.destroy();
+    }
+    
+    currentChart = new ApexCharts(document.querySelector("#trends-chart"), options);
+    currentChart.render();
+  }
+
+  // Search functionality
+  document.getElementById('searchBtn').addEventListener('click', function() {
+    const searchTerm = document.getElementById('cropSearch').value.toLowerCase();
+    filteredData = allData.filter(item => 
+      item.crop.toLowerCase().includes(searchTerm)
+    );
+    loadPriceData(filteredData, 1);
+  });
+
+  // Filter functionality
+  document.getElementById('cropFilter').addEventListener('change', function() {
+    const filterValue = this.value;
+    
+    if (filterValue === 'all') {
+      filteredData = [...allData];
+    } else {
+      filteredData = allData.filter(item => item.changeType === filterValue);
+    }
+    
+    loadPriceData(filteredData, 1);
+  });
+
+  // Handle Enter key in search
+  document.getElementById('cropSearch').addEventListener('keyup', function(e) {
+    if (e.key === 'Enter') {
+      document.getElementById('searchBtn').click();
+    }
+  });
+
+  // Refresh data button
+  document.getElementById('refreshData').addEventListener('click', function() {
+    // Add slight random variations to prices to simulate real-time updates
+    allData.forEach(item => {
+      const currentPrice = parseFloat(item.price.replace('₱', ''));
+      const randomChange = (Math.random() - 0.5) * 0.3;
+      const newPrice = (currentPrice + randomChange).toFixed(2);
+      const percentChange = ((newPrice / currentPrice - 1) * 100).toFixed(1);
+      
+      item.price = '₱' + newPrice;
+      item.change = (percentChange >= 0 ? '+' : '') + percentChange + '%';
+      item.changeType = percentChange > 0 ? 'up' : (percentChange < 0 ? 'down' : 'neutral');
+      item.updated = new Date().toLocaleString('en-PH', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    });
+    
+    // Update the last updated time
+    document.querySelector('.last-updated').textContent = `Last Updated: ${new Date().toLocaleDateString('en-PH', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })}`;
+    
+    // Reapply current filters
+    const searchTerm = document.getElementById('cropSearch').value.toLowerCase();
+    const filterValue = document.getElementById('cropFilter').value;
+    
+    filteredData = allData.filter(item => 
+      item.crop.toLowerCase().includes(searchTerm)
+    );
+    
+    if (filterValue !== 'all') {
+      filteredData = filteredData.filter(item => item.changeType === filterValue);
+    }
+    
+    loadPriceData(filteredData, currentPage);
+    updateTrendsChart(selectedCrop, document.querySelector('.chart-toggle .toggle-btn.active').dataset.period);
+    showNotification("Market data refreshed successfully", "success");
+  });
+
+  // Chart period toggle buttons
+  document.querySelectorAll('.chart-toggle .toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.chart-toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      updateTrendsChart(selectedCrop, this.dataset.period);
+      
+      // Scroll to chart (smoothly) without jumping to bottom
+      document.querySelector('#trends-chart').scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      });
+    });
+  });
+
+  // Table row click to show that crop's trend
+  document.getElementById('priceData').addEventListener('click', function(e) {
+    const row = e.target.closest('tr');
+    const trendBtn = e.target.closest('.view-trend-btn');
+    
+    if (row) {
+      const cropName = row.dataset.crop;
+      const period = document.querySelector('.chart-toggle .toggle-btn.active').dataset.period;
+      
+      // Highlight the selected row
+      document.querySelectorAll('#priceData tr').forEach(r => r.classList.remove('selected-row'));
+      row.classList.add('selected-row');
+      
+      updateTrendsChart(cropName, period);
+    }
+    
+    if (trendBtn) {
+      const cropName = trendBtn.dataset.crop;
+      const period = document.querySelector('.chart-toggle .toggle-btn.active').dataset.period;
+      updateTrendsChart(cropName, period);
+    }
+  });
+
+  // Pagination controls
+  document.getElementById('prevPageBtn').addEventListener('click', function() {
+    if (currentPage > 1) {
+      loadPriceData(filteredData, currentPage - 1);
+    }
+  });
+
+  document.getElementById('nextPageBtn').addEventListener('click', function() {
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    if (currentPage < totalPages) {
+      loadPriceData(filteredData, currentPage + 1);
+    }
+  });
+
+  // Show more crops button
+  document.getElementById('showMoreBtn').addEventListener('click', function() {
+    const totalRows = filteredData.length;
+    const currentVisible = Math.min(currentPage * rowsPerPage, totalRows);
+    
+    if (currentVisible < totalRows) {
+      loadPriceData(filteredData, currentPage + 1);
+    } else {
+      // If all rows are visible, go back to first page with default rows
+      loadPriceData(filteredData, 1);
+    }
+  });
+
+  // Export data button
+  document.getElementById('exportDataBtn').addEventListener('click', function() {
+    // In a real app, this would export the data to CSV or Excel
+    showNotification("Export functionality coming soon!", "info");
+  });
+
+  // Download chart button
+  document.getElementById('downloadChartBtn').addEventListener('click', function() {
+    if (currentChart) {
+      currentChart.dataURI().then(({ imgURI }) => {
+        const link = document.createElement('a');
+        link.href = imgURI;
+        link.download = `${selectedCrop}-price-trend-${new Date().toISOString().slice(0,10)}.png`;
+        link.click();
+        showNotification("Chart image downloaded", "success");
+      });
+    }
+  });
+
+  // Crop selector for chart
+  const cropSelector = document.getElementById('cropSelector');
+  Object.keys(sampleData.trends).forEach(crop => {
+    const option = document.createElement('option');
+    option.value = crop;
+    option.textContent = crop;
+    cropSelector.appendChild(option);
+  });
+
+  cropSelector.addEventListener('change', function() {
+    const period = document.querySelector('.chart-toggle .toggle-btn.active').dataset.period;
+    updateTrendsChart(this.value, period);
+  });
+
+  // Initialize the page
+  loadPriceData(filteredData);
+  updateTrendsChart();
+  
+  // Add tooltip to explain the refresh button
+  const refreshBtn = document.getElementById('refreshData');
+  if (refreshBtn) {
+    refreshBtn.setAttribute('title', 'Get latest market data');
+  }
+});
+
+// Helper function to show notifications
+function showNotification(message, type = "info") {
+  // Create a notification element
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.innerHTML = `
+    <span class="notification-message">${message}</span>
+    <span class="notification-close material-icons-outlined">close</span>
+  `;
+  
+  // Append to body
+  document.body.appendChild(notification);
+  
+  // Show with animation
+  setTimeout(() => {
+    notification.classList.add('show');
+  }, 10);
+  
+  // Auto-hide after 4 seconds
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
+  }, 4000);
+  
+  // Allow manual close
+  notification.querySelector('.notification-close').addEventListener('click', () => {
+    notification.classList.remove('show');
+    setTimeout(() => {
+      notification.remove();
+    }, 300);
+  });
+}
+
+// Make sure these functions are available globally
+function openSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const menuIcon = document.querySelector('.menu-icon');
+
+  sidebar.classList.add("sidebar-responsive");
+
+  // Hide the menu icon when sidebar is open
+  if (menuIcon) {
+    menuIcon.style.display = "none";
+  }
+}
+
+function closeSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const menuIcon = document.querySelector('.menu-icon');
+
+  sidebar.classList.remove("sidebar-responsive");
+
+  // Show the menu icon again when sidebar is closed
+  if (menuIcon) {
+    menuIcon.style.display = "inline";
+  }
+}
+</script>
+
+<style>
+/* Add these new styles to your existing CSS */
+
+.main-title h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.last-updated {
+  color: #666;
+  font-size: 14px;
+  margin: 5px 0 0;
+}
+
+.market-trends-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.trends-search {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  min-width: 250px;
+}
+
+.trends-filter select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.card-header, .chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.table-actions, .chart-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: #e0e0e0;
+}
+
+.action-btn .material-icons-outlined {
+  font-size: 18px;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.pagination-info {
+  font-size: 14px;
+  color: #666;
+}
+
+.pagination-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.pagination-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.view-trend-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #367952;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.view-trend-btn:hover {
+  background: rgba(54, 121, 82, 0.1);
+}
+
+.chart-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.crop-selector select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.chart-notes {
+  margin-top: 15px;
+  font-size: 13px;
+  color: #666;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.selected-row {
+  background-color: rgba(54, 121, 82, 0.1) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .market-trends-controls {
+    flex-direction: column;
+  }
+  
+  .trends-search, .trends-filter {
+    width: 100%;
+  }
+  
+  .chart-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .card-header, .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .table-actions, .chart-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+</style>
