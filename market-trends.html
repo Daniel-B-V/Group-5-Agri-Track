@@ -6,6 +6,7 @@
     <title>Market Trends | Crop Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -142,10 +143,31 @@
             <div class="card-header">
               <h3>Current Market Prices</h3>
               <div class="table-actions">
-                <button id="showMoreBtn" class="action-btn">Show More</button>
-                <button id="exportDataBtn" class="action-btn">
-                  <span class="material-icons-outlined">download</span> Export
+                <button id="showMoreBtn" class="action-btn">
+                  <span class="material-icons-outlined">expand_more</span>
+                  <span>Show More</span>
                 </button>
+                <div class="export-dropdown">
+                  <button id="exportDataBtn" class="action-btn export-btn">
+                    <span class="material-icons-outlined">download</span>
+                    <span>Export</span>
+                    <span class="material-icons-outlined dropdown-arrow">arrow_drop_down</span>
+                  </button>
+                  <div class="export-options" id="exportOptions">
+                    <div class="export-option" data-format="csv">
+                      <span class="material-icons-outlined">text_snippet</span>
+                      <span>CSV File</span>
+                    </div>
+                    <div class="export-option" data-format="excel">
+                      <span class="material-icons-outlined">table_chart</span>
+                      <span>Excel File</span>
+                    </div>
+                    <div class="export-option" data-format="json">
+                      <span class="material-icons-outlined">code</span>
+                      <span>JSON File</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="price-table-container">
@@ -206,7 +228,7 @@
           </div>
         </div>
       </main>
-
+      
       <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
       <script src="scripts.js"></script>
       <script src="market-trends.js"></script>
@@ -215,7 +237,14 @@
 </html>
 
 <script>
+  // Global variable to track chart and prevent duplicates
+let currentChart = null;
+
 document.addEventListener('DOMContentLoaded', function() {
+  // Check if we've already initialized this page
+  if (window.marketTrendsInitialized) return;
+  window.marketTrendsInitialized = true;
+  
   // Enhanced data with more common Philippine crops and updated dates
   const sampleData = {
     prices: [
@@ -260,17 +289,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
-  let currentChart = null;
   let selectedCrop = "Rice";
   let currentPage = 1;
   const rowsPerPage = 5;
-  let allData = [...sampleData.prices];
-  let filteredData = [...sampleData.prices];
+  
+  // Modified to use a Set to prevent duplicates
+  let allData = Array.from(new Set(sampleData.prices.map(JSON.stringify))).map(JSON.parse);
+  let filteredData = [...allData];
 
   // Load price data into the table with pagination
   function loadPriceData(data, page = 1) {
     const tableBody = document.getElementById('priceData');
-    tableBody.innerHTML = '';
+    
+    // Clear existing rows more thoroughly
+    while (tableBody.firstChild) {
+      tableBody.removeChild(tableBody.firstChild);
+    }
     
     const startIndex = (page - 1) * rowsPerPage;
     const endIndex = startIndex + rowsPerPage;
@@ -424,10 +458,15 @@ document.addEventListener('DOMContentLoaded', function() {
       colors: ['#367952']
     };
     
+    // Destroy the current chart if it exists
     if (currentChart) {
       currentChart.destroy();
     }
     
+    // Clear the chart container to ensure no duplicate elements
+    document.querySelector("#trends-chart").innerHTML = '';
+    
+    // Create new chart
     currentChart = new ApexCharts(document.querySelector("#trends-chart"), options);
     currentChart.render();
   }
@@ -537,13 +576,9 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('#priceData tr').forEach(r => r.classList.remove('selected-row'));
       row.classList.add('selected-row');
       
-      updateTrendsChart(cropName, period);
-    }
-    
-    if (trendBtn) {
-      const cropName = trendBtn.dataset.crop;
-      const period = document.querySelector('.chart-toggle .toggle-btn.active').dataset.period;
-      updateTrendsChart(cropName, period);
+      if (trendBtn) {
+        updateTrendsChart(cropName, period);
+      }
     }
   });
 
@@ -574,11 +609,124 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Export data button
-  document.getElementById('exportDataBtn').addEventListener('click', function() {
-    // In a real app, this would export the data to CSV or Excel
-    showNotification("Export functionality coming soon!", "info");
-  });
+  // Fixed Export Functionality
+  const exportDataBtn = document.getElementById('exportDataBtn');
+  const exportOptions = document.getElementById('exportOptions');
+  
+  if (exportDataBtn && exportOptions) {
+    // Toggle export options visibility
+    exportDataBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      exportOptions.classList.toggle('show');
+    });
+    
+    // Close export options when clicking elsewhere
+    document.addEventListener('click', function(e) {
+      if (!exportOptions.contains(e.target) && !exportDataBtn.contains(e.target)) {
+        exportOptions.classList.remove('show');
+      }
+    });
+    
+    // Handle export option clicks
+    document.querySelectorAll('.export-option').forEach(option => {
+      option.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const format = this.dataset.format;
+        
+        // Prepare data for export - clean up the data format
+        const exportData = filteredData.map(item => ({
+          Crop: item.crop,
+          Price: item.price.replace('₱', ''), // Remove the peso symbol for cleaner data
+          Change: item.change,
+          Source: item.source,
+          Updated: item.updated
+        }));
+        
+        const timestamp = new Date().toISOString().slice(0,10);
+        const filename = `crop-prices-${timestamp}`;
+        
+        switch(format) {
+          case 'csv':
+            exportToCSV(exportData, filename);
+            break;
+          case 'excel':
+            exportToExcel(exportData, filename);
+            break;
+          case 'json':
+            exportToJSON(exportData, filename);
+            break;
+        }
+        
+        exportOptions.classList.remove('show');
+        showNotification(`Exported data as ${format.toUpperCase()}`, "success");
+      });
+    });
+  }
+
+  // Improved export functions
+  function exportToCSV(data, filename) {
+    try {
+      // Create headers based on the first object's keys
+      const headers = Object.keys(data[0]).join(',');
+      
+      // Create rows by converting each object to a CSV line
+      const rows = data.map(item => 
+        Object.values(item).map(value => 
+          typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value
+        ).join(',')
+      ).join('\n');
+      
+      // Combine headers and rows
+      const csvContent = `${headers}\n${rows}`;
+      
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${filename}.csv`;
+      document.body.appendChild(link); // Required for Firefox
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error exporting to CSV:', error);
+      showNotification('Failed to export as CSV', 'error');
+    }
+  }
+
+  function exportToExcel(data, filename) {
+    try {
+      // Create a new workbook
+      const wb = XLSX.utils.book_new();
+      
+      // Convert data to worksheet
+      const ws = XLSX.utils.json_to_sheet(data);
+      
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(wb, ws, "Crop Prices");
+      
+      // Generate Excel file and download
+      XLSX.writeFile(wb, `${filename}.xlsx`);
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+      showNotification('Failed to export as Excel - make sure SheetJS is loaded', 'error');
+    }
+  }
+
+  function exportToJSON(data, filename) {
+    try {
+      const jsonContent = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonContent], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${filename}.json`;
+      document.body.appendChild(link); // Required for Firefox
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error exporting to JSON:', error);
+      showNotification('Failed to export as JSON', 'error');
+    }
+  }
 
   // Download chart button
   document.getElementById('downloadChartBtn').addEventListener('click', function() {
@@ -595,6 +743,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Crop selector for chart
   const cropSelector = document.getElementById('cropSelector');
+  
+  // Clear existing options first
+  while (cropSelector.firstChild) {
+    cropSelector.removeChild(cropSelector.firstChild);
+  }
+  
+  // Add options
   Object.keys(sampleData.trends).forEach(crop => {
     const option = document.createElement('option');
     option.value = crop;
@@ -728,6 +883,7 @@ function closeSidebar() {
   gap: 10px;
 }
 
+/* Improved Action buttons */
 .action-btn {
   background: #f5f5f5;
   border: 1px solid #ddd;
@@ -739,14 +895,119 @@ function closeSidebar() {
   gap: 5px;
   font-size: 14px;
   transition: all 0.2s ease;
+  color: #333;
 }
 
 .action-btn:hover {
   background: #e0e0e0;
 }
 
+.action-btn:active {
+  background: #d0d0d0;
+  transform: translateY(1px);
+}
+
 .action-btn .material-icons-outlined {
   font-size: 18px;
+}
+
+/* Updated Z-index hierarchy - export behind other dropdowns */
+.notification-icon-container, 
+.email-icon-container, 
+.profile-icon-container {
+  position: relative;
+  z-index: 110; /* Higher than export dropdown */
+}
+
+.notification-dropdown, 
+.email-dropdown, 
+.profile-dropdown {
+  z-index: 111; /* Highest priority dropdowns */
+}
+
+/* Export dropdown specific styles */
+.export-dropdown {
+  position: relative;
+  display: inline-block;
+  z-index: 100; /* Lower than other dropdown containers */
+}
+
+.export-btn {
+  background-color: #367952;
+  color: white;
+  border-color: #2c6443;
+}
+
+.export-btn:hover {
+  background-color: #2c6443;
+}
+
+.dropdown-arrow {
+  font-size: 18px;
+  margin-left: 2px;
+}
+
+.export-options {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  z-index: 101; /* Higher than its container but lower than other dropdowns */
+  display: none;
+  min-width: 160px;
+  margin-top: 5px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.export-options.show {
+  display: block;
+}
+
+.export-option {
+  padding: 10px 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.2s;
+  color: #333;
+}
+
+.export-option:first-child {
+  border-radius: 4px 4px 0 0;
+}
+
+.export-option:last-child {
+  border-radius: 0 0 4px 4px;
+}
+
+.export-option:hover {
+  background-color: #f5f5f5;
+}
+
+.export-option .material-icons-outlined {
+  font-size: 20px;
+  color: #666;
+}
+
+.export-option[data-format="csv"] .material-icons-outlined {
+  color: #4285F4;
+}
+
+.export-option[data-format="excel"] .material-icons-outlined {
+  color: #0F9D58;
+}
+
+.export-option[data-format="json"] .material-icons-outlined {
+  color: #F4B400;
 }
 
 .table-footer {
@@ -831,6 +1092,51 @@ function closeSidebar() {
   background-color: rgba(54, 121, 82, 0.1) !important;
 }
 
+/* Notification styling improvements */
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  background: white;
+  border-left: 4px solid #367952;
+  border-radius: 4px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  z-index: 1000;
+  transform: translateX(120%);
+  transition: transform 0.3s ease;
+  max-width: 350px;
+}
+
+.notification.show {
+  transform: translateX(0);
+}
+
+.notification-success {
+  border-left-color: #367952;
+}
+
+.notification-error {
+  border-left-color: #e74c3c;
+}
+
+.notification-info {
+  border-left-color: #3498db;
+}
+
+.notification-close {
+  cursor: pointer;
+  color: #999;
+}
+
+.notification-close:hover {
+  color: #666;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .market-trends-controls {
@@ -855,6 +1161,11 @@ function closeSidebar() {
   .table-actions, .chart-actions {
     width: 100%;
     justify-content: flex-end;
+  }
+  
+  .export-options {
+    width: 100%;
+    right: 0;
   }
 }
 </style>
