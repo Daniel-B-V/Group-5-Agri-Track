@@ -6,8 +6,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Harvest Tracking</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
@@ -21,6 +21,30 @@
       background-attachment: fixed; 
     }
 
+    /* Add top alert styles */
+    .top-alert {
+      position: fixed;
+      top: -60px;
+      left: 0;
+      right: 0;
+      padding: 15px;
+      text-align: center;
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+      z-index: 1000;
+      transition: top 0.5s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .top-alert.show {
+      top: 0;
+    }
+
+    .top-alert.error {
+      background-color: #f44336;
+    }
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -30,7 +54,7 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-    .go-back-btn {
+      .go-back-btn {
       display: flex;
       align-items: center;
       background-color: #367952;
@@ -39,10 +63,7 @@
       border-radius: 5px;
       text-decoration: none;
       font-weight: 600;
-    }
-
-    .go-back-btn span {
-      margin-right: 5px;
+      transition: all 0.3s ease;
     }
 
     .container {
@@ -78,18 +99,20 @@
       cursor: pointer;
     }
 
-    .icon-item span {
-      font-size: 40px;
-      color: #367952;
-      background-color: #e6e8ed;
-      padding: 15px;
+    .icon-item .crop-image {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
       border-radius: 50%;
+      background-color: #e6e8ed;
+      padding: 0;
       transition: 0.2s ease;
+      border: 2px solid #e6e8ed;
     }
 
-    .icon-item span:hover {
-      background-color: #367952;
-      color: white;
+    .icon-item .crop-image:hover {
+      border-color: #367952;
+      transform: scale(1.05);
     }
 
     .icon-item p {
@@ -99,14 +122,22 @@
       color: #222;
     }
 
-    .add-item span {
+    .add-item .crop-image {
       background-color: #cfcfcf;
-      color: #4f35a1;
+      border-color: #4f35a1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .add-item span:hover {
+    .add-item .crop-image:hover {
       background-color: #4f35a1;
+      border-color: #4f35a1;
+    }
+
+    .add-icon {
       color: white;
+      font-size: 30px;
     }
 
     /* Modal Styles */
@@ -206,39 +237,69 @@
       background-color: #5a6268;
     }
 
+    /* Image Upload Styles */
+    .image-upload-container {
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .image-preview {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 10px auto;
+      display: block;
+      border: 2px solid #ddd;
+    }
+
+    .upload-btn {
+      background-color: #4f35a1;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-block;
+      margin-top: 5px;
+    }
+
+    .upload-btn:hover {
+      background-color: #3d2880;
+    }
+
+    #cameraBtn {
+      background-color: #367952;
+      margin-right: 5px;
+    }
+
+    #uploadBtn {
+      background-color: #4f35a1;
+    }
+
     /* Instruction Modal Styles */
     .instruction-modal {
       display: none;
       position: fixed;
-      z-index: 1100;
+      z-index: 1000;
       left: 0;
       top: 0;
       width: 100%;
       height: 100%;
       background-color: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
 
     .instruction-content {
       background-color: #f8f9fa;
       margin: 10% auto;
-      padding: 30px;
+      padding: 25px;
       border-radius: 12px;
-      width: 90%;
-      max-width: 550px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      animation: slideUp 0.4s ease;
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+      z-index: 1001;
     }
 
     .instruction-title {
@@ -247,33 +308,27 @@
       font-size: 24px;
       border-bottom: 2px solid #367952;
       padding-bottom: 10px;
-      margin-bottom: 20px;
     }
 
     .instruction-text {
       margin: 20px 0;
       line-height: 1.6;
-      color: #444;
     }
 
     .instruction-button {
       background-color: #367952;
       color: white;
-      padding: 12px 25px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 6px;
+      border-radius: 5px;
       cursor: pointer;
       font-size: 16px;
-      font-weight: 600;
       display: block;
-      margin: 25px auto 0;
-      transition: all 0.3s ease;
+      margin: 0 auto;
     }
 
     .instruction-button:hover {
       background-color: #2a6142;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
     .instruction-list {
@@ -282,33 +337,13 @@
     }
 
     .instruction-list li {
-      margin-bottom: 10px;
-      color: #444;
+      margin-bottom: 8px;
     }
 
-    .top-alert {
-      position: fixed;
-      top: -60px;
-      left: 0;
-      right: 0;
-      padding: 15px;
-      text-align: center;
-      background-color: #4CAF50;
-      color: white;
-      font-weight: bold;
-      z-index: 1000;
-      transition: top 0.5s ease;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    /* Hidden file input */
+    #cropImageInput {
+      display: none;
     }
-
-    .top-alert.show {
-      top: 0;
-    }
-
-    .top-alert.error {
-      background-color: #f44336;
-    }
-
   </style>
 </head>
 <body>
@@ -320,7 +355,7 @@
         <p>This section helps you track your crop harvests. Here's how to use it:</p>
         <ul class="instruction-list">
           <li><strong>Click on any crop</strong> to record your harvest quantity</li>
-          <li><strong>Add new crops</strong> if what you harvested isn't listed</li>
+          <li><strong>Add new crops</strong> by taking a photo or uploading an image</li>
           <li>Crops are organized by <strong>Vegetables</strong> and <strong>Fruits</strong></li>
           <li>Your harvest data will be saved for future reference</li>
         </ul>
@@ -333,8 +368,7 @@
   <!-- Header with Back Button -->
   <div class="header">
     <a href="index.html" class="go-back-btn">
-      <span class="material-icons-outlined">arrow_back</span>
-      Go Back
+      <span class="material-icons-outlined">arrow_back</span> Go Back
     </a>
   </div>
 
@@ -342,16 +376,48 @@
   <div class="container">
     <h1>VEGETABLES</h1>
     <div class="icon-grid" id="vegetablesGrid">
-      <div class="icon-item" data-crop="Corn"><span class="material-icons-outlined">spa</span><p>Corn</p></div>
-      <div class="icon-item" data-crop="Tomatoes"><span class="material-icons-outlined">local_florist</span><p>Tomatoes</p></div>
-      <div class="icon-item" data-crop="Rice"><span class="material-icons-outlined">grass</span><p>Rice</p></div>
-      <div class="icon-item" data-crop="Carrots"><span class="material-icons-outlined">emoji_nature</span><p>Carrots</p></div>
-      <div class="icon-item" data-crop="Munggo"><span class="material-icons-outlined">filter_vintage</span><p>Munggo</p></div>
-      <div class="icon-item" data-crop="Lettuce"><span class="material-icons-outlined">eco</span><p>Lettuce</p></div>
-      <div class="icon-item" data-crop="Chili"><span class="material-icons-outlined">whatshot</span><p>Chili</p></div>
-      <div class="icon-item" data-crop="Okra"><span class="material-icons-outlined">agriculture</span><p>Okra</p></div>
-      <div class="icon-item" data-crop="Beans"><span class="material-icons-outlined">grass</span><p>Beans</p></div>
-      <div class="icon-item add-item" id="addCropButton"><span class="material-icons-outlined">add_circle</span><p>Add</p></div>
+      <div class="icon-item" data-crop="Corn">
+        <img src="images/corn.jpg" alt="Corn" class="crop-image">
+        <p>Corn</p>
+      </div>
+      <div class="icon-item" data-crop="Tomatoes">
+        <img src="images/tomatoe.jpg" alt="Tomatoes" class="crop-image">
+        <p>Tomatoes</p>
+      </div>
+      <div class="icon-item" data-crop="Rice">
+        <img src="images/rice.jpg" alt="Rice" class="crop-image">
+        <p>Rice</p>
+      </div>
+      <div class="icon-item" data-crop="Carrots">
+        <img src="images/carrots.jpg" alt="Carrots" class="crop-image">
+        <p>Carrots</p>
+      </div>
+      <div class="icon-item" data-crop="Munggo">
+        <img src="images/munggo.jpg" alt="Munggo" class="crop-image">
+        <p>Munggo</p>
+      </div>
+      <div class="icon-item" data-crop="Lettuce">
+        <img src="images/lettuce.jpg" alt="Lettuce" class="crop-image">
+        <p>Lettuce</p>
+      </div>
+      <div class="icon-item" data-crop="Chili">
+        <img src="images/chili.jpg" alt="Chili" class="crop-image">
+        <p>Chili</p>
+      </div>
+      <div class="icon-item" data-crop="Okra">
+        <img src="images/okra.jpg" alt="Okra" class="crop-image">
+        <p>Okra</p>
+      </div>
+      <div class="icon-item" data-crop="Beans">
+        <img src="images/beans.jpg" alt="Beans" class="crop-image">
+        <p>Beans</p>
+      </div>
+      <div class="icon-item add-item" id="addCropButton">
+        <div class="crop-image">
+          <span class="add-icon">+</span>
+        </div>
+        <p>Add</p>
+      </div>
     </div>
   </div>
 
@@ -359,16 +425,48 @@
   <div class="container">
     <h1>FRUITS</h1>
     <div class="icon-grid" id="fruitsGrid">
-      <div class="icon-item" data-crop="Banana"><span class="material-icons-outlined">emoji_food_beverage</span><p>Banana</p></div>
-      <div class="icon-item" data-crop="Strawberry"><span class="material-icons-outlined">favorite</span><p>Strawberry</p></div>
-      <div class="icon-item" data-crop="Pineapple"><span class="material-icons-outlined">local_pizza</span><p>Pineapple</p></div>
-      <div class="icon-item" data-crop="Mango"><span class="material-icons-outlined">water_drop</span><p>Mango</p></div>
-      <div class="icon-item" data-crop="Guava"><span class="material-icons-outlined">ac_unit</span><p>Guava</p></div>
-      <div class="icon-item" data-crop="Orange"><span class="material-icons-outlined">brightness_5</span><p>Orange</p></div>
-      <div class="icon-item" data-crop="Apple"><span class="material-icons-outlined">light_mode</span><p>Apple</p></div>
-      <div class="icon-item" data-crop="Lanzones"><span class="material-icons-outlined">savings</span><p>Lanzones</p></div>
-      <div class="icon-item" data-crop="Melon"><span class="material-icons-outlined">egg</span><p>Melon</p></div>
-      <div class="icon-item add-item" id="addFruitButton"><span class="material-icons-outlined">add_circle</span><p>Add</p></div>
+      <div class="icon-item" data-crop="Banana">
+        <img src="images/banana.jpg" alt="Banana" class="crop-image">
+        <p>Banana</p>
+      </div>
+      <div class="icon-item" data-crop="Strawberry">
+        <img src="images/strawberry.jpg" alt="Strawberry" class="crop-image">
+        <p>Strawberry</p>
+      </div>
+      <div class="icon-item" data-crop="Pineapple">
+        <img src="images/pineapple.jpg" alt="Pineapple" class="crop-image">
+        <p>Pineapple</p>
+      </div>
+      <div class="icon-item" data-crop="Mango">
+        <img src="images/mango.jpg" alt="Mango" class="crop-image">
+        <p>Mango</p>
+      </div>
+      <div class="icon-item" data-crop="Guava">
+        <img src="images/guava.jpg" alt="Guava" class="crop-image">
+        <p>Guava</p>
+      </div>
+      <div class="icon-item" data-crop="Orange">
+        <img src="images/oranges.jpg" alt="Orange" class="crop-image">
+        <p>Orange</p>
+      </div>
+      <div class="icon-item" data-crop="Apple">
+        <img src="images/apple.jpg" alt="Apple" class="crop-image">
+        <p>Apple</p>
+      </div>
+      <div class="icon-item" data-crop="Lanzones">
+        <img src="images/lanzones.jpg" alt="Lanzones" class="crop-image">
+        <p>Lanzones</p>
+      </div>
+      <div class="icon-item" data-crop="Melon">
+        <img src="images/melon.jpg" alt="Melon" class="crop-image">
+        <p>Melon</p>
+      </div>
+      <div class="icon-item add-item" id="addFruitButton">
+        <div class="crop-image">
+          <span class="add-icon">+</span>
+        </div>
+        <p>Add</p>
+      </div>
     </div>
   </div>
 
@@ -411,19 +509,15 @@
         placeholder="Enter crop name (e.g. Eggplant)"
       >
       
-      <label for="newCropIcon" class="quantity-label">Select Icon:</label>
-      <select id="newCropIcon" class="modal-select">
-        <option value="spa">Leaf (spa)</option>
-        <option value="local_florist">Flower (local_florist)</option>
-        <option value="grass">Grass (grass)</option>
-        <option value="emoji_nature">Nature (emoji_nature)</option>
-        <option value="eco">Eco (eco)</option>
-        <option value="whatshot">Hot (whatshot)</option>
-        <option value="agriculture">Agriculture (agriculture)</option>
-        <option value="emoji_food_beverage">Banana (emoji_food_beverage)</option>
-        <option value="favorite">Heart (favorite)</option>
-        <option value="water_drop">Water (water_drop)</option>
-      </select>
+      <div class="image-upload-container">
+        <label class="quantity-label">Crop Image:</label>
+        <img id="imagePreview" class="image-preview" src="images/placeholder.jpg" alt="">
+        <div class="button-group">
+          <button id="cameraBtn" class="upload-btn">Take Photo</button>
+          <button id="uploadBtn" class="upload-btn">Upload</button>
+        </div>
+        <input type="file" id="cropImageInput" accept="image/*" capture="environment">
+      </div>
       
       <div class="button-group">
         <button class="modal-button secondary-button" id="cancelAddCrop">Cancel</button>
@@ -435,11 +529,30 @@
   <script>
     // Current selected crop
     let currentCrop = '';
+    let selectedImage = null;
+    
+    // Function to show top alert
+    function showTopAlert(message, type = 'success') {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `top-alert ${type}`;
+      alertDiv.textContent = message;
+      document.body.prepend(alertDiv);
+      
+      setTimeout(() => {
+        alertDiv.classList.add('show');
+      }, 100);
+      
+      setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 500);
+      }, 3000);
+    }
 
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
       // Show instruction modal on first visit
-      if (!localStorage.getItem('hasSeenInstructions')) {
+      const hasSeenInstructions = localStorage.getItem('hasSeenHarvestInstructions');
+      if (!hasSeenInstructions) {
         document.getElementById('instructionModal').style.display = 'block';
       }
       
@@ -455,11 +568,7 @@
       // Setup crop item click handlers
       document.querySelectorAll('.icon-item[data-crop]').forEach(item => {
         item.addEventListener('click', function() {
-          currentCrop = this.getAttribute('data-crop');
-          document.getElementById('quantityModalTitle').textContent = `Harvest ${currentCrop}`;
-          document.getElementById('cropQuantity').value = '';
-          document.getElementById('quantityModal').style.display = 'block';
-          document.getElementById('cropQuantity').focus();
+          openQuantityModal(this.getAttribute('data-crop'));
         });
       });
       
@@ -475,6 +584,20 @@
       // Save buttons
       document.getElementById('saveQuantityButton').addEventListener('click', saveQuantity);
       document.getElementById('confirmAddCrop').addEventListener('click', addNewCrop);
+      
+      // Image upload buttons
+      document.getElementById('cameraBtn').addEventListener('click', () => {
+        document.getElementById('cropImageInput').setAttribute('capture', 'environment');
+        document.getElementById('cropImageInput').click();
+      });
+      
+      document.getElementById('uploadBtn').addEventListener('click', () => {
+        document.getElementById('cropImageInput').removeAttribute('capture');
+        document.getElementById('cropImageInput').click();
+      });
+      
+      // Handle image selection
+      document.getElementById('cropImageInput').addEventListener('change', handleImageUpload);
       
       // Handle Enter key in quantity modal
       document.getElementById('cropQuantity').addEventListener('keypress', function(e) {
@@ -497,15 +620,25 @@
         if (event.target.classList.contains('modal')) {
           closeModal(event.target.id);
         }
-        if (event.target.classList.contains('instruction-modal')) {
-          closeInstructionModal();
-        }
       });
     });
 
+    // Handle image upload
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('imagePreview').src = e.target.result;
+        selectedImage = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
     // Load custom crops from localStorage
     function loadCustomCrops() {
-      const customCrops = JSON.parse(localStorage.getItem('customCrops')) || [];
+      const customCrops = JSON.parse(localStorage.getItem('harvestCustomCrops')) || [];
       
       customCrops.forEach(crop => {
         const gridId = crop.category === 'vegetables' ? 'vegetablesGrid' : 'fruitsGrid';
@@ -520,17 +653,13 @@
         newCrop.className = 'icon-item';
         newCrop.setAttribute('data-crop', crop.name);
         newCrop.innerHTML = `
-          <span class="material-icons-outlined">${crop.icon}</span>
+          <img src="${crop.image}" alt="${crop.name}" class="crop-image">
           <p>${crop.name}</p>
         `;
         
         // Add click handler
         newCrop.addEventListener('click', function() {
-          currentCrop = crop.name;
-          document.getElementById('quantityModalTitle').textContent = `Harvest ${crop.name}`;
-          document.getElementById('cropQuantity').value = '';
-          document.getElementById('quantityModal').style.display = 'block';
-          document.getElementById('cropQuantity').focus();
+          openQuantityModal(crop.name);
         });
         
         // Insert before the Add button (last item)
@@ -538,15 +667,15 @@
       });
     }
 
-    // Save custom crops to localStorage
+    // Save custom crop to localStorage
     function saveCustomCrop(crop) {
-      const customCrops = JSON.parse(localStorage.getItem('customCrops')) || [];
+      const customCrops = JSON.parse(localStorage.getItem('harvestCustomCrops')) || [];
       
       // Check if crop already exists
       const exists = customCrops.some(c => c.name === crop.name && c.category === crop.category);
       if (!exists) {
         customCrops.push(crop);
-        localStorage.setItem('customCrops', JSON.stringify(customCrops));
+        localStorage.setItem('harvestCustomCrops', JSON.stringify(customCrops));
       }
     }
 
@@ -561,6 +690,11 @@
     
     // Open add new crop modal
     function openAddModal() {
+      // Reset form
+      document.getElementById('newCropName').value = '';
+      document.getElementById('imagePreview').src = 'images/placeholder.jpg';
+      selectedImage = null;
+      
       document.getElementById('addModal').style.display = 'block';
       document.getElementById('newCropName').focus();
     }
@@ -583,25 +717,30 @@
       if (!isNaN(quantity) && quantity > 0) {
         if (typeof addHarvestItem === 'function') {
           addHarvestItem(currentCrop, quantity);
-          showTopAlert(`Harvested ${quantity} ${currentCrop}!`);
+          showTopAlert(`Recorded harvest of ${quantity} ${currentCrop}!`);
           closeModal('quantityModal');
         } else {
-          showTopAlert('Error: Could not save data', 'error');
+          console.error('addHarvestItem function not found');
+          showTopAlert('Error: Could not save the data', 'error');
         }
       } else {
-        showTopAlert('Please enter valid quantity', 'error');
+        showTopAlert('Please enter a valid quantity (whole numbers only)', 'error');
         quantityInput.focus();
       }
     }
     
     // Add new crop to the grid
     function addNewCrop() {
-      const name = document.getElementById('newCropName').value.trim();
       const category = document.getElementById('cropCategory').value;
-      const icon = document.getElementById('newCropIcon').value;
+      const name = document.getElementById('newCropName').value.trim();
       
       if (!name) {
-        showTopAlert('Please enter crop name', 'error');
+        showTopAlert('Please enter a crop name', 'error');
+        return;
+      }
+      
+      if (!selectedImage) {
+        showTopAlert('Please add a photo of the crop', 'error');
         return;
       }
       
@@ -620,41 +759,27 @@
       newCrop.className = 'icon-item';
       newCrop.setAttribute('data-crop', name);
       newCrop.innerHTML = `
-        <span class="material-icons-outlined">${icon}</span>
+        <img src="${selectedImage}" alt="${name}" class="crop-image">
         <p>${name}</p>
       `;
       
       // Add click handler
       newCrop.addEventListener('click', function() {
-        currentCrop = name;
-        document.getElementById('quantityModalTitle').textContent = `Harvest ${name}`;
-        document.getElementById('cropQuantity').value = '';
-        document.getElementById('quantityModal').style.display = 'block';
-        document.getElementById('cropQuantity').focus();
+        openQuantityModal(name);
       });
       
       // Insert before the Add button (last item)
       grid.insertBefore(newCrop, grid.lastElementChild);
       
       // Save to localStorage
-      saveCustomCrop({ name, category, icon });
+      saveCustomCrop({ 
+        name, 
+        category, 
+        image: selectedImage 
+      });
       
-      showTopAlert(`Added new crop: ${name}`);
+      showTopAlert(`Added new ${category.slice(0, -1)}: ${name}`);
       closeModal('addModal');
-      document.getElementById('newCropName').value = '';
-    }
-
-    function showTopAlert(message, type = 'success') {
-      const alertDiv = document.createElement('div');
-      alertDiv.className = `top-alert ${type}`;
-      alertDiv.textContent = message;
-      document.body.prepend(alertDiv);
-      
-      setTimeout(() => alertDiv.classList.add('show'), 100);
-      setTimeout(() => {
-        alertDiv.classList.remove('show');
-        setTimeout(() => alertDiv.remove(), 500);
-      }, 3000);
     }
   </script>
 </body>
