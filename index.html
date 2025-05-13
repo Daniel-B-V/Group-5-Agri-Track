@@ -109,6 +109,157 @@
           font-size: 22px;
         }
       }
+
+      /* Enhanced Chatbot Styles */
+      .chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+      
+      .chatbot-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+      
+      .chatbot-button:hover {
+        background-color: #45a049;
+        transform: scale(1.1);
+      }
+      
+      .chatbot-window {
+        display: none;
+        flex-direction: column;
+        width: 350px;
+        height: 500px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        overflow: hidden;
+      }
+      
+      .chatbot-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .chatbot-header h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+      
+      .close-chatbot {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 20px;
+      }
+      
+      .chatbot-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background-color: #f9f9f9;
+      }
+      
+      .bot-message, .user-message {
+        margin-bottom: 15px;
+        max-width: 80%;
+        padding: 10px 15px;
+        border-radius: 18px;
+        line-height: 1.5;
+      }
+      
+      .bot-message {
+        background-color: #f0f0f0;
+        border-radius: 18px 18px 18px 0;
+        margin-right: auto;
+      }
+      
+      .bot-message p {
+        margin: 0.5em 0;
+        white-space: pre-line; /* This preserves line breaks */
+      }
+      
+      .user-message {
+        background-color: #222020;
+        border-radius: 18px 18px 0 18px;
+        margin-left: auto;
+      }
+      
+      .chatbot-input {
+        display: flex;
+        padding: 10px;
+        background-color: white;
+        border-top: 1px solid #eee;
+      }
+      
+      .chatbot-input input {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        outline: none;
+      }
+      
+      .chatbot-input button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        margin-left: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .typing-indicator {
+        display: flex;
+        padding: 10px 15px;
+      }
+      
+      .typing-indicator span {
+        height: 8px;
+        width: 8px;
+        background-color: #666;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 2px;
+        animation: typing 1s infinite ease-in-out;
+      }
+      
+      .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      
+      .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      
+      @keyframes typing {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
     </style>
   </head>
   <body>
@@ -123,7 +274,6 @@
             <span class="go-back-text">Go Back</span>
           </a>
         </div>
-        <!-- Update the header-right section in index.html -->
         <div class="header-right">
           <div class="notification-icon-container">
             <span class="material-icons-outlined" id="notificationBell">notifications</span>
@@ -272,37 +422,38 @@
             <div id="area-chart"></div>
           </div>
         </div>
+      </main>
+    </div>
 
-        <!-- AI Chatbot Widget -->
-      <div class="chatbot-container">
-        <button class="chatbot-button" id="chatbotToggle">
-          <span class="material-icons-outlined">chat</span>
-        </button>
-        
-        <div class="chatbot-window" id="chatbotWindow">
-          <div class="chatbot-header">
-            <h3>Crop Tracker AI Assistant</h3>
-            <button class="close-chatbot" id="closeChatbot">
-              <span class="material-icons-outlined">close</span>
-            </button>
-          </div>
-          <div class="chatbot-messages" id="chatbotMessages">
-            <div class="bot-message">
-              <p>Hello! I'm your AI crop tracking assistant. How can I help you with harvest data, consumption reports, or donations today?</p>
-            </div>
-          </div>
-          <div class="chatbot-input">
-            <input type="text" id="chatbotInput" placeholder="Ask about crops, harvests, or reports...">
-            <button id="sendMessage">
-              <span class="material-icons-outlined">send</span>
-            </button>
+    <!-- AI Chatbot Widget -->
+    <div class="chatbot-container">
+      <button class="chatbot-button" id="chatbotToggle">
+        <span class="material-icons-outlined">chat</span>
+      </button>
+      
+      <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+          <h3>Crop Tracker AI Assistant</h3>
+          <button class="close-chatbot" id="closeChatbot">
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="bot-message">
+            <p>Hello! I'm your AI crop tracking assistant. How can I help you with harvest data, consumption reports, or donations today?</p>
           </div>
         </div>
+        <div class="chatbot-input">
+          <input type="text" id="chatbotInput" placeholder="Ask about crops, harvests, or reports...">
+          <button id="sendMessage">
+            <span class="material-icons-outlined">send</span>
+          </button>
+        </div>
       </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.3/apexcharts.min.js"></script>
     <script src="scripts.js"></script>
-
     
     <script>
       // Mobile-specific JavaScript
@@ -314,208 +465,191 @@
         document.getElementById('sidebar').classList.remove('sidebar-responsive');
       }
       
-      // Adjust chart sizes on mobile
-      function adjustChartsForMobile() {
-        if (window.innerWidth <= 768) {
-          // You would adjust your chart initialization here
-          // For example:
-          /*
-          if (window.barChart) {
-            window.barChart.updateOptions({
-              chart: {
-                width: '100%',
-                height: 300
-              }
-            });
+      // Chatbot functionality with improved text formatting
+      document.addEventListener('DOMContentLoaded', function() {
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const closeChatbot = document.getElementById('closeChatbot');
+        const sendMessageBtn = document.getElementById('sendMessage');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        
+        // IMPORTANT: Replace with your actual Cohere API key
+        const COHERE_API_KEY = '6M5Ib1CC7sj1g7i6gGW6GmvtJmpSLXaLoBlIq1fY';
+        
+        // Rate limiting variables
+        let lastRequestTime = 0;
+        const MIN_REQUEST_DELAY = 1000; // 1 second between requests
+        
+        // Conversation history for context
+        let conversationHistory = [
+          {
+            role: "SYSTEM",
+            message: "You are an AI assistant for a crop tracking application. Provide responses with:\n\n- Clear paragraph breaks\n- Proper spacing\n- Bullet points for lists\n- Concise but complete information\n\nFocus on agricultural data, harvest management, and crop analytics."
           }
-          */
-        }
-      }
-      
-      // Initialize on load and on resize
-      window.addEventListener('load', adjustChartsForMobile);
-      window.addEventListener('resize', adjustChartsForMobile);
-    </script>
-
-   <script>
-    // Chatbot functionality with Cohere API integration
-    document.addEventListener('DOMContentLoaded', function() {
-      const chatbotToggle = document.getElementById('chatbotToggle');
-      const chatbotWindow = document.getElementById('chatbotWindow');
-      const closeChatbot = document.getElementById('closeChatbot');
-      const sendMessageBtn = document.getElementById('sendMessage');
-      const chatbotInput = document.getElementById('chatbotInput');
-      const chatbotMessages = document.getElementById('chatbotMessages');
-      
-      // IMPORTANT: Remove this API key before deploying to production
-      // For production, use a backend service to protect your API key
-      const COHERE_API_KEY = '6M5Ib1CC7sj1g7i6gGW6GmvtJmpSLXaLoBlIq1fY'; // Replace with your actual Cohere key
-      
-      // Rate limiting variables
-      let lastRequestTime = 0;
-      const MIN_REQUEST_DELAY = 1000; // 1 second between requests
-      
-      // Conversation history for context
-      let conversationHistory = [
-        {
-          role: "SYSTEM",
-          message: "You are an AI assistant for a crop tracking application. Be helpful and concise. Focus on agricultural data, harvest management, and crop analytics. Reference available data when appropriate. Keep responses under 2-3 sentences unless more detail is requested."
-        }
-      ];
-      
-      // Toggle chatbot window
-      chatbotToggle.addEventListener('click', function() {
-        chatbotWindow.style.display = chatbotWindow.style.display === 'flex' ? 'none' : 'flex';
-      });
-      
-      // Close chatbot window
-      closeChatbot.addEventListener('click', function() {
-        chatbotWindow.style.display = 'none';
-      });
-      
-      // Send message on button click
-      sendMessageBtn.addEventListener('click', sendMessage);
-      
-      // Send message on Enter key
-      chatbotInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-          sendMessage();
-        }
-      });
-      
-      async function sendMessage() {
-        const message = chatbotInput.value.trim();
-        if (!message) return;
+        ];
         
-        // Add user message
-        addMessage(message, 'user');
-        chatbotInput.value = '';
-        
-        // Add to conversation history
-        conversationHistory.push({
-          role: "USER",
-          message: message
+        // Toggle chatbot window
+        chatbotToggle.addEventListener('click', function() {
+          chatbotWindow.style.display = chatbotWindow.style.display === 'flex' ? 'none' : 'flex';
+          if (chatbotWindow.style.display === 'flex') {
+            chatbotInput.focus();
+          }
         });
         
-        // Show typing indicator
-        const typingIndicator = addTypingIndicator();
+        // Close chatbot window
+        closeChatbot.addEventListener('click', function() {
+          chatbotWindow.style.display = 'none';
+        });
         
-        // Rate limiting - wait if needed
-        const now = Date.now();
-        const timeSinceLastRequest = now - lastRequestTime;
+        // Send message on button click
+        sendMessageBtn.addEventListener('click', sendMessage);
         
-        if (timeSinceLastRequest < MIN_REQUEST_DELAY) {
-          await new Promise(resolve => setTimeout(resolve, MIN_REQUEST_DELAY - timeSinceLastRequest));
-        }
+        // Send message on Enter key
+        chatbotInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            sendMessage();
+          }
+        });
         
-        try {
-          // Get current dashboard data for context
-          const harvestTotal = document.getElementById('harvest-total').textContent;
-          const consumedTotal = document.getElementById('consumed-total').textContent;
-          const donatedTotal = document.getElementById('donated-total').textContent;
+        async function sendMessage() {
+          const message = chatbotInput.value.trim();
+          if (!message) return;
           
-          // Create the prompt with current data
-          const prompt = `Current crop data: Harvest: ${harvestTotal}, Consumed: ${consumedTotal}, Donated: ${donatedTotal}.\n\n` +
-            conversationHistory.map(msg => `${msg.role}: ${msg.message}`).join('\n');
-          
-          // Get bot response from Cohere API
-          const botResponse = await getCohereResponse(prompt);
-          
-          // Remove typing indicator and add actual response
-          chatbotMessages.removeChild(typingIndicator);
-          addMessage(botResponse, 'bot');
+          // Add user message
+          addMessage(message, 'user');
+          chatbotInput.value = '';
           
           // Add to conversation history
           conversationHistory.push({
-            role: "CHATBOT",
-            message: botResponse
+            role: "USER",
+            message: message
           });
           
-          // Update last request time
-          lastRequestTime = Date.now();
-        } catch (error) {
-          console.error('Error calling Cohere API:', error);
-          chatbotMessages.removeChild(typingIndicator);
+          // Show typing indicator
+          const typingIndicator = addTypingIndicator();
           
-          // User-friendly error messages
-          let errorMessage = "Sorry, I'm having trouble connecting to the AI service.";
-          if (error.message.includes('rate limit') || error.message.includes('too many requests')) {
-            errorMessage = "I'm getting too many requests too quickly. Please wait a moment and try again.";
-          } else if (error.message.includes('API key')) {
-            errorMessage = "There's an issue with the AI service configuration. Please contact support.";
+          // Rate limiting - wait if needed
+          const now = Date.now();
+          const timeSinceLastRequest = now - lastRequestTime;
+          
+          if (timeSinceLastRequest < MIN_REQUEST_DELAY) {
+            await new Promise(resolve => setTimeout(resolve, MIN_REQUEST_DELAY - timeSinceLastRequest));
           }
           
-          addMessage(errorMessage, 'bot');
-        }
-      }
-      
-      function addTypingIndicator() {
-        const typingDiv = document.createElement('div');
-        typingDiv.classList.add('bot-message');
-        typingDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
-        chatbotMessages.appendChild(typingDiv);
-        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        return typingDiv;
-      }
-      
-      function addMessage(text, sender) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add(`${sender}-message`);
-        
-        const messageP = document.createElement('p');
-        messageP.textContent = text;
-        
-        messageDiv.appendChild(messageP);
-        chatbotMessages.appendChild(messageDiv);
-        
-        // Scroll to bottom
-        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-      }
-      
-      async function getCohereResponse(prompt) {
-        const response = await fetch('https://api.cohere.ai/v1/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${COHERE_API_KEY}`,
-            'Cohere-Version': '2022-12-06'
-          },
-          body: JSON.stringify({
-            model: "command",
-            message: prompt,
-            temperature: 0.7,
-            max_tokens: 200,
-            // You can add additional parameters as needed:
-            // preamble: "You are an AI assistant for a crop tracking application...",
-            // conversation_id: "unique_conversation_id",
-            // prompt_truncation: "AUTO"
-          })
-        });
-        
-        // Check for API errors
-        if (!response.ok) {
-          let errorMsg = `API request failed with status ${response.status}`;
           try {
-            const errorData = await response.json();
-            if (errorData.message) {
-              errorMsg = errorData.message;
+            // Get current dashboard data for context
+            const harvestTotal = document.getElementById('harvest-total').textContent;
+            const consumedTotal = document.getElementById('consumed-total').textContent;
+            const donatedTotal = document.getElementById('donated-total').textContent;
+            
+            // Create the prompt with current data and formatting instructions
+            const prompt = `Current crop data:
+            - Harvest: ${harvestTotal}
+            - Consumed: ${consumedTotal}
+            - Donated: ${donatedTotal}
+
+            Conversation history:
+            ${conversationHistory.map(msg => `${msg.role}: ${msg.message}`).join('\n')}
+
+            Please respond to the user's last message with:
+            - Proper paragraph spacing
+            - Clear formatting
+            - Bullet points when listing items
+            - Concise but helpful information`;
+            
+            // Get bot response from Cohere API
+            const botResponse = await getCohereResponse(prompt);
+            
+            // Remove typing indicator and add actual response
+            chatbotMessages.removeChild(typingIndicator);
+            addMessage(formatResponse(botResponse), 'bot');
+            
+            // Add to conversation history
+            conversationHistory.push({
+              role: "CHATBOT",
+              message: botResponse
+            });
+            
+            // Update last request time
+            lastRequestTime = Date.now();
+          } catch (error) {
+            console.error('Error calling Cohere API:', error);
+            chatbotMessages.removeChild(typingIndicator);
+            
+            let errorMessage = "Sorry, I'm having trouble connecting to the AI service.";
+            if (error.message.includes('rate limit')) {
+              errorMessage = "Please wait a moment before sending another message.";
+            } else if (error.message.includes('API key')) {
+              errorMessage = "There's an issue with the AI service configuration.";
             }
-          } catch (e) {
-            console.error('Error parsing error response:', e);
+            
+            addMessage(errorMessage, 'bot');
           }
-          throw new Error(errorMsg);
         }
         
-        const data = await response.json();
-        
-        // Validate response structure
-        if (!data.text) {
-          throw new Error("Unexpected API response format");
+        function formatResponse(text) {
+          // Ensure proper spacing between paragraphs
+          let formatted = text.replace(/\n\n+/g, '\n\n');
+          
+          // Format numbered lists
+          formatted = formatted.replace(/(\d+)\. /g, '\n$1. ');
+          
+          // Format bullet points
+          formatted = formatted.replace(/•/g, '\n•');
+          
+          return formatted.trim();
         }
         
-        return data.text;
-      }
-    });
-  </script>
+        function addTypingIndicator() {
+          const typingDiv = document.createElement('div');
+          typingDiv.classList.add('bot-message');
+          typingDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+          chatbotMessages.appendChild(typingDiv);
+          chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+          return typingDiv;
+        }
+        
+        function addMessage(text, sender) {
+          const messageDiv = document.createElement('div');
+          messageDiv.classList.add(`${sender}-message`);
+          
+          const messageP = document.createElement('p');
+          messageP.innerHTML = text.replace(/\n/g, '<br>');
+          
+          messageDiv.appendChild(messageP);
+          chatbotMessages.appendChild(messageDiv);
+          
+          // Scroll to bottom
+          chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+        
+        async function getCohereResponse(prompt) {
+          const response = await fetch('https://api.cohere.ai/v1/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${COHERE_API_KEY}`,
+              'Cohere-Version': '2022-12-06'
+            },
+            body: JSON.stringify({
+              model: "command",
+              message: prompt,
+              temperature: 0.7,
+              max_tokens: 500,
+              preamble: "Format responses with proper spacing, paragraph breaks, and clear lists. Be concise but helpful."
+            })
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `API request failed with status ${response.status}`);
+          }
+          
+          const data = await response.json();
+          return data.text || "I don't have a response at the moment.";
+        }
+      });
+    </script>
   </body>
 </html>
