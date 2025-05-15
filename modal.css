@@ -235,7 +235,7 @@ button {
     text-transform: uppercase;
     transition: transform 80ms ease-in;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 1px;
 }
 
 button:active {
@@ -494,3 +494,19 @@ button:hover {
     }
 }
 
+/* Fix for button position - add this to your existing CSS */
+form {
+    position: relative;
+    padding-bottom: 20px; /* Adds space at bottom to prevent cutoff */
+}
+
+button[type="submit"] {
+    margin-top: 10px !important; /* Reduced from your current margin */
+    margin-bottom: 10px !important; /* Adds space below button */
+}
+
+/* Keep existing message styles but adjust positioning */
+.error-message, .success-message {
+    margin: 5px 0 10px 0 !important; /* Reduced vertical spacing */
+    position: static !important; /* Ensure it stays in normal flow */
+}
